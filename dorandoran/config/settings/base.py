@@ -10,17 +10,42 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
-from pathlib import Path
+import os
+import json
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+# ============== 경로 설정 =============
+_BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+BASE_DIR = os.path.dirname(_BASE)
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
+ROOT_DIR = os.path.dirname(BASE_DIR)
+# ======================================
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '04an_klnmzr)n#y*t^ae8o5t7arat9yli%)&__d!d6y%0=fp9x'
+# ======== SECRET FILE 경로 설정 ========
+CONFIG_SECRET_DIR = os.path.join(ROOT_DIR, ".config_secret")
+CONFIG_SECRET_COMMON_FILE = os.path.join(CONFIG_SECRET_DIR, "settings_common.json")
+# ======================================
+
+# ======= SECRET FILE json으로 가져오기 ========
+if os.path.isfile(CONFIG_SECRET_COMMON_FILE):
+    # 로컬 환경 또는 배포 환경
+    config_secret_common = json.loads(open(CONFIG_SECRET_COMMON_FILE).read())
+else:
+    # 테스팅 환경 (환경변수로 지정해야댐)
+    config_secret_common = json.loads(os.environ["SECRET_SETTING"])
+# ======================================
+
+SECRET_KEY = config_secret_common["django"]["secret_key"] # Django Secret key
+
+# ======= JWT 설정 =======
+JWT_AUTH = {
+    "JWT_ALLOW_REFRESH": True,
+    "JWT_SECRET_KEY": config_secret_common["jwt"]["secret_key"],
+    "JWT_ALGORITHM": config_secret_common["jwt"]["algorithm"],
+}
+# ========================
+
+DATABASES = config_secret_common["django"]["database"] # DB 설정
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -68,17 +93,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
-
-
-# Database
-# https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 
 
 # Password validation
