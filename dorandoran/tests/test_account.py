@@ -1,6 +1,8 @@
 from django.test import TestCase, Client
 from rest_framework import status
 from account.models import User
+from django.contrib.auth.hashers import make_password
+
 
 client = Client()
 
@@ -8,16 +10,15 @@ client = Client()
 class Login(TestCase):
 
     def setUp(self):
-        self.base_user_form = { # 기본 유저 폼
-            "username" : "habi",
-            "email" : "gksqls0128@gmail.com",
-            "password" : "0128gksqls"
-        }
         self.credentials = {
             "email" : "hanbin8269@gmail.com",
             "password" : "0128gksqls",
         }
-        User.objects.create(**self.credentials)
+        exist_user = {
+            "email" : "hanbin8269@gmail.com",
+            "password" : make_password("0128gksqls")
+        }
+        User.objects.create(**exist_user)
 
     def tearDown(self):
         User.objects.all().delete()
@@ -114,4 +115,4 @@ class SignUp(TestCase):
 
         response = client.post('/auth/sign-up', user, content_type='application/json')
 
-        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
