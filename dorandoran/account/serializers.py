@@ -33,7 +33,6 @@ class LoginUserSerializer(serializers.Serializer):
             "is_teacher" : user.is_teacher,
             "is_active" : user.is_active
         }
-        print(payload)
         token = utils.jwt_encode_handler(payload) # token 만들고
         
         return user,token # user, token 반환
