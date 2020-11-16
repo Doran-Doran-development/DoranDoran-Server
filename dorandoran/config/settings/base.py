@@ -53,8 +53,10 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 AUTHENTICATION_BACKENDS = [
-    "account.backends.UserBackend",
+    "account.backends.UserBackend"
 ]
+
+AUTH_USER_MODEL = "account.User"
 
 # Application definition
 
