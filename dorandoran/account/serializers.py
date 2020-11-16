@@ -7,11 +7,10 @@ import jwt
 class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('email', 'password', 'name', 'is_teacher')
-        extra_kwargs = {'password':{'writeonly':True}}
+        fields = ('email', 'password', 'username', 'is_teacher')
     
     def create(self, validated_data):
-        return User.objects.create_user(**validated_data)
+        return User.objects.create(**validated_data)
 
 
 class LoginUserSerializer(serializers.Serializer):
