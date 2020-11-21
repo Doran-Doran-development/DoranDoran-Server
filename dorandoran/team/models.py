@@ -14,7 +14,7 @@ class Team(models.Model):
     def __str__(self):
         return self.project
 
-class LinkedTeamTable(models.Model):
+class LinkedTeamUser(models.Model):
     team_id = models.ForeignKey(primary_key=True, 'team.Team', on_delete=models.CASCADE)   
     email = models.ForeignKey(primary_key=True, 'account.User', on_delete=models.CASCADE)
     
