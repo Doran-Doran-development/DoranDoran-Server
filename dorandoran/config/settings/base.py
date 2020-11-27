@@ -52,6 +52,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTHENTICATION_BACKENDS = [
+    "account.backends.UserBackend"
+]
+
+AUTH_USER_MODEL = "account.User"
 
 # Application definition
 
@@ -63,7 +68,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'drf_yasg',
+<<<<<<< HEAD
     'room',
+=======
+    'account',
+>>>>>>> 16cb29fe51e644262beeb17e0657fd3f3dcd8bd6
 ]
 
 MIDDLEWARE = [
