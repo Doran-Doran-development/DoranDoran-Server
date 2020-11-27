@@ -20,15 +20,13 @@ class Team(models.Model):
 
 
 class LinkedTeamUser(models.Model):
-    team_id = models.ForeignKey("team.Team", primary_key=True, on_delete=models.CASCADE)
-    email = models.ForeignKey(
-        "account.User", primary_key=True, on_delete=models.CASCADE
-    )
+
+    team_id = models.ForeignKey("team.Team", on_delete=models.CASCADE)
+    email = models.ForeignKey("account.User", on_delete=models.CASCADE)
 
     class Meta:
-        ordering = [
-            "team_id",
-        ]
+        unique_together = ("team_id", "email")
+        ordering = ["team_id", "emiail"]
 
     def __str__(self):
         return self.team_id, self.email
