@@ -17,3 +17,11 @@ class ListRoomAPI(mixins.ListModelMixins
     def get(self,request,*args,**kwargs):
         return self.list(reqeust,*args,**kwargs)
 
+class GetRoomAPI(mixins.RetrieveModelMinxins
+                generics.GenericsAPIView):
+    
+    queryset = Room.objects.all()
+    serializer_class = RoomSerializer
+
+    def get(self,request,*args,**kwargs):
+        return self.retrieve(request,*args,**kwargs)
