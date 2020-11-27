@@ -1,27 +1,36 @@
-import jwt
+from rest_framework import viewsets
+from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import generics
-from rest_framework import mixins
 from .models import Room
 from .serializers import RoomSerializer
+from django.shortcuts import get_object_or_404
+from django.db.models import Count
+
+import json
 
 
+class RoomViewSet(viewsets.ViewSet):
 
-class ListRoomAPI(mixins.ListModelMixins
-                  generics.GenericsAPIView):
+    def list(self, request):
 
-    queryset = Room.objects.all()
-    serializer_class = RoomSerializer
+        queryset = Project.objects.all()
+        serializer = RoomSerializer(queyrset,many=True)
+        return Response(serializer.data)
 
-    def get(self,request,*args,**kwargs):
-        return self.list(reqeust,*args,**kwargs)
 
-class GetRoomAPI(mixins.RetrieveModelMinxins
-                generics.GenericsAPIView):
-    
-    queryset = Room.objects.all()
-    serializer_class = RoomSerializer
+    def create(self, request):
 
-    def get(self,request,*args,**kwargs):
-        return self.retrieve(request,*args,**kwargs)
+        obj = {
+            "name":request.data["name"],
+            "max_team":request.data["max_team"],
+            "owner":request.user.id,
+        }
+
+        serializer = RoomSerializer(data=obj)
+
+        if not serializer.is_valid():
+            return Response(serializer.errors)
+
+        serializer.save()
+        return Response(serializer.data)
