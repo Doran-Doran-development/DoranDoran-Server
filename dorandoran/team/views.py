@@ -12,22 +12,13 @@ from .serializers import TeamSerializer, LinkedTeamUserSerializer
 
 class TeamViewSet(viewsets.ModelViewSet):
     team_queryset = Team.objects.all()
-    linked_model_queryset = LinkedTeamUser.objects.all()
-    serializer_class = TeamSerializer
-    # renderer_class = Response
 
     # 팀 생성
     def create(self, request):
         serializer = TeamSerializer(data=request.data)
-
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=400)
-
-        if not serializer.is_valid_project():
-            return Response({"message": "project name format is different"}, status=400)
-
-        serializer.save()
-        return Response({"message": "register success"}, status=200)
+        if serializer.validate(request.data):
+            serializer.save()
+            return Response({"message": "register success"}, status=200)
 
     # 모든 팀 리스트
     def list(self, request):
