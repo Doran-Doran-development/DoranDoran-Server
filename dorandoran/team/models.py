@@ -26,7 +26,7 @@ class LinkedTeamUser(models.Model):
 
     class Meta:
         unique_together = ("team_id", "email")
-        ordering = ["team_id", "emiail"]
+        ordering = ["team_id", "email"]
 
     def __str__(self):
         return self.team_id, self.email
