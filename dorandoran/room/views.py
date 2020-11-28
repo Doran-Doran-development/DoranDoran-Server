@@ -14,8 +14,8 @@ class RoomViewSet(viewsets.ViewSet):
 
     def list(self, request):
 
-        queryset = Project.objects.all()
-        serializer = RoomSerializer(queyrset,many=True)
+        queryset = Room.objects.all()
+        serializer = RoomSerializer(queryset,many=True)
         return Response(serializer.data)
 
 
