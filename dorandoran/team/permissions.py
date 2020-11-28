@@ -6,15 +6,9 @@ from account.models import User
 
 class TeamPermission(BasePermission):
     def is_teacher(self, value):
-        try:
-            queryset = User.objects.get(email=value)
-
-            if not queryset["is_teacher"]:
-                return False
-
-        except User.DoesNotExist:
+        queryset = User.objects.filter(eamil=value).filter(is_teacher=True)
+        if not queryset.exists():
             return
-
         return True
 
     def is_valid_project_name(self, value):
