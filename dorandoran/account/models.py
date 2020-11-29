@@ -9,7 +9,7 @@ class User(AbstractBaseUser):
         max_length=150,
         help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
     )
-    email = models.EmailField(_('email address'), unique=True, max_length=128)
+    email = models.EmailField(_('email address'), unique=True, max_length=128, primary_key=True)
     is_teacher = models.BooleanField(
         _('teacher status'),
         default = False,
