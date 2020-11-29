@@ -6,7 +6,7 @@ from account.models import User
 
 class Team(models.Model):
     team_id = models.AutoField(primary_key=True)
-    project = models.CharField(max_length=50, blank=False)
+    project = models.CharField(max_length=50, unique=True, blank=False)
     description = models.CharField(max_length=250, blank=False)
     teacher = models.ForeignKey("account.User", on_delete=models.CASCADE)
 
