@@ -20,7 +20,7 @@ from .yasg import *
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("auth/", include("account.urls")),
-    path("team/", include("team.urls")),
+    path("team", include("team.urls")),
     path(
         "swagger<str:format>",
         schema_view.without_ui(cache_timeout=0),

@@ -16,14 +16,9 @@ class TeamViewSet(viewsets.ModelViewSet):
     # 팀 생성
     def create(self, request):
         serializer = TeamSerializer(data=request.data)
-        if serializer.validate(request.data):
+        if serializer.validate(request.data) and serializer.is_valid(request.data):
             serializer.save()
             return Response({"message": "register success"}, status=200)
-
-    # 모든 팀 리스트
-    def list(self, request):
-
-        pass
 
     # 해당 팀 정보
     def retrieve(self, request, pk=None):
@@ -35,14 +30,10 @@ class TeamViewSet(viewsets.ModelViewSet):
 
     # 특정 유저의 팀정보 가져오기
     @action(detail=True, methods=["get"])
-    def get_own_team(self, request, eamil=None):
+    def get_own_team(self, request):
+        user = request.user.id
 
-        pass
-
-    # 팀 삭제
-    def destory(self, request, pk=None):
-
-        pass
+        return
 
 
 class LinkedTeamUserViewSet(viewsets.ModelViewSet):

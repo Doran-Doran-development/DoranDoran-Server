@@ -1,22 +1,22 @@
 import re
-from rest_framework.serializers import ModelSerializer, Serializer
+from rest_framework import serializers
 from django.utils.translation import ugettext as _
 from .models import Team, LinkedTeamUser
 from rest_framework.exceptions import ValidationError
 from .permissions import TeamPermission
 
 
-class TeamSerializer(ModelSerializer):
+class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
-        fields = ("team_id", "project", "description", "teacher")
+        fields = "__all__"
 
     def validate(self, req):
         teacher = req["teacher"]
         project = req["project"]
 
         is_valid_teacher = TeamPermission.is_teacher(teacher)
-        if is_teacher == None:
+        if is_valid_teacher == None:
             msg = _("User instance not exists")
             raise ValidationError(msg)
 
@@ -29,6 +29,6 @@ class TeamSerializer(ModelSerializer):
         return True
 
 
-class LinkedTeamUserSerializer(ModelSerializer):
+class LinkedTeamUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = LinkedTeamUser
