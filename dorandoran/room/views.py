@@ -2,6 +2,8 @@ from rest_framework import viewsets
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
+
+from .permissions import *
 from .models import Room
 from .serializers import RoomSerializer
 from django.shortcuts import get_object_or_404
@@ -10,6 +12,13 @@ import json
 
 
 class RoomViewSet(viewsets.ViewSet):
+    def get_permissions(self):
+        if self.action == "list" or self.action == "retrieve":
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [IsTeacher]
+        return [permission() for permission in permission_classes]
+
     def list(self, request):
 
         queryset = Room.objects.all()
