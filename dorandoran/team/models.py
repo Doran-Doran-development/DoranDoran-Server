@@ -11,6 +11,7 @@ class Team(models.Model):
     teacher = models.ForeignKey("account.User", on_delete=models.CASCADE)
 
     class Meta:
+        db_table = u"Team"
         ordering = [
             "team_id",
         ]
@@ -25,6 +26,7 @@ class LinkedTeamUser(models.Model):
     email = models.ForeignKey("account.User", on_delete=models.CASCADE)
 
     class Meta:
+        db_table = u"LinkedTeamUser"
         unique_together = ("team_id", "email")
         ordering = ["team_id", "email"]
 

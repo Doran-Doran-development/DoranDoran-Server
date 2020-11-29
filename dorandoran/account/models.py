@@ -5,15 +5,22 @@ from django.utils.translation import gettext_lazy as _
 
 class User(AbstractBaseUser):
     username = models.CharField(
-        _('username'),
+        _("username"),
         max_length=150,
-        help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+        help_text=_(
+            "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+        ),
     )
-    email = models.EmailField(_('email address'), unique=True, max_length=128, primary_key=True)
+    email = models.EmailField(
+        _("email address"), unique=True, max_length=128, primary_key=True
+    )
     is_teacher = models.BooleanField(
-        _('teacher status'),
-        default = False,
-        help_text=_('Can accept or refuse reservation request')
+        _("teacher status"),
+        default=False,
+        help_text=_("Can accept or refuse reservation request"),
     )
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = "email"
+
+    class Meta:
+        db_table = u"User"
