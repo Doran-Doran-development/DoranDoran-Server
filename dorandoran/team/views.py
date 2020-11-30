@@ -10,7 +10,7 @@ from .serializers import TeamSerializer, LinkedTeamUserSerializer
 # Create your views here.
 
 
-class TeamListCreateAPI(generics.ListCreateAPIView):
+class TeamListCreateView(generics.ListCreateAPIView):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
 
@@ -22,17 +22,16 @@ class TeamListCreateAPI(generics.ListCreateAPIView):
             return Response(serializer.data, status=200)
 
 
-class TeamRetrieveDestroyAPI(generics.RetrieveDestroyAPIView):
+class TeamRetrieveDestroyView(generics.RetrieveDestroyAPIView):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
 
 
-class LinkedTeamUserViewSet(viewsets.ModelViewSet):
+class TeamJoinView(generics.CreateAPIView):
+    queryset = LinkedTeamUser.objects.all()
+    serializer_class = LinkedTeamUserSerializer
 
-    # 팀원 추가
-    def create(self, request):
-        return
 
-    # 팀원 삭제
-    def destroy(self, request, pk=None):
-        return
+class TeamOutView(generics.DestroyAPIView):
+    queryset = LinkedTeamUser.objects.all()
+    serializer_class = LinkedTeamUserSerializer

@@ -32,3 +32,4 @@ class TeamSerializer(serializers.ModelSerializer):
 class LinkedTeamUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = LinkedTeamUser
+        fields = ("team_id", "email")
