@@ -3,21 +3,18 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from .permissions import *
+from .permissions import IsTeacherOrReadOnly
 from .models import Room
 from .serializers import RoomSerializer
 from django.shortcuts import get_object_or_404
+from rest_framework import permissions
 from django.db.models import Count
 import json
 
 
 class RoomViewSet(viewsets.ViewSet):
-    def get_permissions(self):
-        if self.action == "list" or self.action == "retrieve":
-            permission_classes = [IsAuthenticated]
-        else:
-            permission_classes = [IsTeacher]
-        return [permission() for permission in permission_classes]
+
+    permission_classes = [permissions.IsAuthenticated & IsTeacherOrReadOnly]
 
     def list(self, request):
 
