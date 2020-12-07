@@ -10,7 +10,7 @@ from django.contrib.auth.hashers import make_password
 class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('email', 'password', 'username', 'is_teacher')
+        fields = ('email', 'password', 'name', 'is_teacher')
     
     def create(self, validated_data):
         validated_data['password'] = make_password(validated_data['password'])
@@ -29,7 +29,7 @@ class LoginUserSerializer(serializers.Serializer):
 
         payload = {
             "email" : user.email,
-            "username" : user.username,
+            "name" : user.name,
             "is_teacher" : user.is_teacher,
             "is_active" : user.is_active
         }
@@ -41,4 +41,4 @@ class LoginUserSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('email', 'password', 'username', 'is_teacher')
+        fields = ('email', 'password', 'name', 'is_teacher')
