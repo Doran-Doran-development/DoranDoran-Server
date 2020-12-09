@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from account.authentication import CustomJSONWebTokenAuthentication
 
 from .permissions import IsTeacherOrReadOnly
 from .models import Room
@@ -14,6 +15,7 @@ import json
 
 class RoomViewSet(viewsets.ViewSet):
 
+    authentication_classes = [CustomJSONWebTokenAuthentication]
     permission_classes = [permissions.IsAuthenticated & IsTeacherOrReadOnly]
 
     def list(self, request):
@@ -27,7 +29,7 @@ class RoomViewSet(viewsets.ViewSet):
         obj = {
             "name": request.data["name"],
             "max_team": request.data["max_team"],
-            "owner": request.user.id,
+            "owner": request.user.email,
         }
 
         serializer = RoomSerializer(data=obj)
