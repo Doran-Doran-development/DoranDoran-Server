@@ -6,11 +6,12 @@ from account.models import User
 
 class Team(models.Model):
     team_id = models.AutoField(primary_key=True)
-    project = models.CharField(max_length=50, blank=False)
+    project = models.CharField(max_length=50, unique=True, blank=False)
     description = models.CharField(max_length=250, blank=False)
     teacher = models.ForeignKey("account.User", on_delete=models.CASCADE)
 
     class Meta:
+        db_table = u"Team"
         ordering = [
             "team_id",
         ]
@@ -25,6 +26,7 @@ class LinkedTeamUser(models.Model):
     email = models.ForeignKey("account.User", on_delete=models.CASCADE)
 
     class Meta:
+        db_table = u"LinkedTeamUser"
         unique_together = ("team_id", "email")
         ordering = ["team_id", "email"]
 

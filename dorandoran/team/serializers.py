@@ -26,9 +26,10 @@ class TeamSerializer(serializers.ModelSerializer):
             msg = _("is not valid project name format")
             raise ValidationError(msg)
 
-        return True
+        return req
 
 
 class LinkedTeamUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = LinkedTeamUser
+        fields = ("team_id", "email")
