@@ -4,7 +4,6 @@ from django.utils.translation import ugettext as _
 from .models import Team, LinkedTeamUser
 from account.models import User
 from rest_framework.exceptions import ValidationError
-from .permissions import TeamPermission
 
 
 class TeamSerializer(serializers.ModelSerializer):
@@ -12,10 +11,10 @@ class TeamSerializer(serializers.ModelSerializer):
         model = Team
         fields = "__all__"
 
-    def validate(self, req):
+    def validate(self, obj):
 
-        teacher = req["is_teacher"]
-        project = req["project"]
+        teacher = obj["teacher"]
+        project = obj["project"]
 
         #유효한 교사 이메일인지 검사
         is_valid_teacher = self.is_teacher(teacher)
@@ -29,7 +28,7 @@ class TeamSerializer(serializers.ModelSerializer):
             msg = _("is not valid project name format")
             raise ValidationError(msg)
 
-        return True
+        return obj
 
     def is_teacher(self, email):
         queryset = User.objects.filter(email=email).filter(is_teacher=True)
@@ -39,7 +38,7 @@ class TeamSerializer(serializers.ModelSerializer):
 
     def is_valid_project_name(self, project):
         project_format = re.compile("(.+)[-](.+)")
-        if not project_format.search(project__name):
+        if not project_format.search(project):
             return False
         return True
 
