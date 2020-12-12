@@ -15,8 +15,7 @@ from django.db.models import Count
 import json
 
 
-class RoomViewSet(viewsets.ViewSet,
-                  mixins.UpdateModelMixin):
+class RoomViewSet(viewsets.ViewSet):
 
     # authentication_classes = [CustomJSONWebTokenAuthentication]
     # permission_classes = [permissions.IsAuthenticated & IsTeacherOrReadOnly]
@@ -48,8 +47,10 @@ class RoomViewSet(viewsets.ViewSet,
         serializer = RoomSerializer(queryset)
         return Response(serializer.data)
 
-    def destroy(self, request,pk=None,*args, **kwargs):
+    def destroy(self, request,pk=None):
         instance = Room.objects.get(pk=pk)
+        if not instance.is_valid():
+            return Response(instance.errors)
         instance.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({"message":"Success"},status=status.HTTP_204_NO_CONTENT)
 
