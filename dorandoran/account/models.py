@@ -1,11 +1,41 @@
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 
+class UserManager(BaseUserManager):
 
-class User(AbstractBaseUser):
-    username = models.CharField(
-        _("username"),
+    use_in_migrations = True
+
+    def create_user(self, email, nickname, password=None):
+
+        if not email:
+            raise ValueError("must have user email")
+        user = self.model(email=self.normalize_email(email), nickname=nickname)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, email, nickname, password):
+
+        user = self.create_user(
+            email=self.normalize_email(email), nickname=nickname, password=password
+        )
+        user.is_admin = True
+        user.is_superuser = True
+        user.is_staff = True
+        user.save(using=self._db)
+        return user
+
+
+class User(AbstractUser):
+    firstname = None
+    last_name = None
+    username = None
+
+    objects = UserManager()
+
+    name = models.CharField(
+        _('username'),
         max_length=150,
         help_text=_(
             "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
@@ -20,7 +50,5 @@ class User(AbstractBaseUser):
         help_text=_("Can accept or refuse reservation request"),
     )
 
-    USERNAME_FIELD = "email"
-
-    class Meta:
-        db_table = u"User"
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []

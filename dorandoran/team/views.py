@@ -6,7 +6,8 @@ from rest_framework.decorators import action
 from .models import Team, LinkedTeamUser
 from account.models import User
 from .serializers import TeamSerializer, LinkedTeamUserSerializer
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from account.authentication import CustomJSONWebTokenAuthentication
+from room.permissions import IsTeacherOrReadOnly
 from rest_framework import permissions
 
 # Create your views here.
@@ -15,7 +16,7 @@ from rest_framework import permissions
 class TeamListCreateView(generics.ListCreateAPIView):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
-    authentication_classes = JSONWebTokenAuthentication
+    authentication_classes = [CustomJSONWebTokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     # 팀 생성
@@ -26,17 +27,30 @@ class TeamListCreateView(generics.ListCreateAPIView):
             return Response(serializer.data, status=200)
 
 
-class TeamRetrieveDestroyView(generics.RetrieveDestroyAPIView):
+class TeamDestroyView(generics.DestroyAPIView):
+    authentication_classes = [CustomJSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated & IsTeacherOrReadOnly]
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
 
+class TeamRetrieveView(generics.RetrieveAPIView):
+    queryset = Team.objects.all()
+    serializer_class = TeamSerializer
+    authentication_classes = [CustomJSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    
+    
 
 class TeamJoinView(generics.CreateAPIView):
+    authentication_classes = [CustomJSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = LinkedTeamUser.objects.all()
     serializer_class = LinkedTeamUserSerializer
 
 
 class TeamOutView(generics.DestroyAPIView):
+    authentication_classes = [CustomJSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     queryset = LinkedTeamUser.objects.all()
     serializer_class = LinkedTeamUserSerializer
 
@@ -47,6 +61,8 @@ class TeamOutView(generics.DestroyAPIView):
 
 
 class TeamView(generics.ListAPIView):
+    authentication_classes = [CustomJSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
     def list(self, request, email=None):
         queryset = LinkedTeamUser.objects.filter(email=email)
         if not queryset:

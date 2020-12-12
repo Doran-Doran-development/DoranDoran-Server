@@ -10,8 +10,8 @@ from django.contrib.auth.hashers import make_password
 class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("email", "password", "username", "is_teacher")
-
+        fields = ('email', 'password', 'name', 'is_teacher')
+    
     def create(self, validated_data):
         validated_data["password"] = make_password(validated_data["password"])
         return User.objects.create(**validated_data)
@@ -28,10 +28,10 @@ class LoginUserSerializer(serializers.Serializer):
             raise serializers.ValidationError(msg)
 
         payload = {
-            "email": user.email,
-            "username": user.username,
-            "is_teacher": user.is_teacher,
-            "is_active": user.is_active,
+            "email" : user.email,
+            "name" : user.name,
+            "is_teacher" : user.is_teacher,
+            "is_active" : user.is_active
         }
         token = utils.jwt_encode_handler(payload)  # token 만들고
 
@@ -41,5 +41,4 @@ class LoginUserSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("email", "password", "username", "is_teacher")
- 
+        fields = ('email', 'password', 'name', 'is_teacher')
