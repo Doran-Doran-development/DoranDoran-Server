@@ -26,20 +26,12 @@ class TeamListCreateView(generics.ListCreateAPIView):
             serializer.save()
             return Response(serializer.data, status=200)
 
-
-class TeamDestroyView(generics.DestroyAPIView):
+class TeamRetrieveDestroyView(generics.RetrieveDestroyAPIView):
+    queryset = Team.objects.all()
+    serializer_class = TeamSerializer
     authentication_classes = [CustomJSONWebTokenAuthentication]
     permission_classes = [permissions.IsAuthenticated & IsTeacherOrReadOnly]
-    queryset = Team.objects.all()
-    serializer_class = TeamSerializer
 
-class TeamRetrieveView(generics.RetrieveAPIView):
-    queryset = Team.objects.all()
-    serializer_class = TeamSerializer
-    authentication_classes = [CustomJSONWebTokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
-    
-    
 
 class TeamJoinView(generics.CreateAPIView):
     authentication_classes = [CustomJSONWebTokenAuthentication]

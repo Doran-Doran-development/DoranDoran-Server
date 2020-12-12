@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 
+
 class UserManager(BaseUserManager):
 
     use_in_migrations = True
@@ -35,7 +36,7 @@ class User(AbstractUser):
     objects = UserManager()
 
     name = models.CharField(
-        _('username'),
+        _("username"),
         max_length=150,
         help_text=_(
             "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
@@ -50,5 +51,5 @@ class User(AbstractUser):
         help_text=_("Can accept or refuse reservation request"),
     )
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
