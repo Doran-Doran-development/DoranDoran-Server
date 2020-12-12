@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 
+
 class UserManager(BaseUserManager):
 
     use_in_migrations = True
@@ -35,16 +36,20 @@ class User(AbstractUser):
     objects = UserManager()
 
     name = models.CharField(
-        _('username'),
+        _("username"),
         max_length=150,
-        help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+        help_text=_(
+            "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+        ),
     )
-    email = models.EmailField(_('email address'), unique=True, max_length=128, primary_key=True)
+    email = models.EmailField(
+        _("email address"), unique=True, max_length=128, primary_key=True
+    )
     is_teacher = models.BooleanField(
-        _('teacher status'),
-        default = False,
-        help_text=_('Can accept or refuse reservation request')
+        _("teacher status"),
+        default=False,
+        help_text=_("Can accept or refuse reservation request"),
     )
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
