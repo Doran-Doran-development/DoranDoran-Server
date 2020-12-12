@@ -1,7 +1,9 @@
 from rest_framework import viewsets
 from rest_framework import generics
+from rest_framework import mixins
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
 from account.authentication import CustomJSONWebTokenAuthentication
 
 from .permissions import IsTeacherOrReadOnly
@@ -13,10 +15,11 @@ from django.db.models import Count
 import json
 
 
-class RoomViewSet(viewsets.ViewSet):
+class RoomViewSet(viewsets.ViewSet,
+                  mixins.UpdateModelMixin):
 
-    authentication_classes = [CustomJSONWebTokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated & IsTeacherOrReadOnly]
+    # authentication_classes = [CustomJSONWebTokenAuthentication]
+    # permission_classes = [permissions.IsAuthenticated & IsTeacherOrReadOnly]
 
     def list(self, request):
 
@@ -44,3 +47,9 @@ class RoomViewSet(viewsets.ViewSet):
         queryset = Room.objects.get(pk=pk)
         serializer = RoomSerializer(queryset)
         return Response(serializer.data)
+
+    def destroy(self, request,pk=None,*args, **kwargs):
+        instance = Room.objects.get(pk=pk)
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
