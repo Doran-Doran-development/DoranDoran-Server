@@ -17,8 +17,8 @@ import json
 
 class RoomViewSet(viewsets.ViewSet):
 
-    # authentication_classes = [CustomJSONWebTokenAuthentication]
-    # permission_classes = [permissions.IsAuthenticated & IsTeacherOrReadOnly]
+    authentication_classes = [CustomJSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated & IsTeacherOrReadOnly]
 
     def list(self, request):
 
@@ -49,8 +49,13 @@ class RoomViewSet(viewsets.ViewSet):
 
     def destroy(self, request,pk=None):
         instance = Room.objects.get(pk=pk)
-        if not instance.is_valid():
-            return Response(instance.errors)
         instance.delete()
         return Response({"message":"Success"},status=status.HTTP_204_NO_CONTENT)
 
+    def update(self, request,pk=None):
+        instance = Room.objects.get(pk=pk)
+        instance.name = request.data["name"]
+        instance.max_team = request.data["max_team"]
+        instance.owner = request.user
+        instance.save()
+        return Response(request.data)
