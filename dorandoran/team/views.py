@@ -42,28 +42,46 @@ class TeamViewSet(viewsets.ViewSet):
             serializer.save()
             return Response(serializer.data, status=200)
     
-    def destroy(self, request, pk=None):
+    def destroy(self, request, *args, **kwargs):
         queryset = Team.objects.get(pk=pk)
         serializer = TeamSerializer(data=queryset)
         if not serializer.is_valid():
             return ValidationError()
         serializer.delete()
         return Response(status=202)
+    
+class MemberViewSet(viewsets.ViewSet):
 
-        
+    authentication_classes = [CustomJSONWebTokenAuthentication]
+    permissions_classes = [permissions.IsAuthenticated & isTeacherOrNotDelete]
 
-    # class TeamListCreateView(generics.ListCreateAPIView):
-    #     queryset = Team.objects.all()
-    #     serializer_class = TeamSerializer
-    #     authentication_classes = [CustomJSONWebTokenAuthentication]
-    #     permission_classes = [permissions.IsAuthenticated]
+    def list(self, request, *args, **kwargs):
+        quueryset = LinkedTeamUser.objects.filter(email=request.user.email)
+        serializer = LinkedTeamUserSerializer(data=queryset)
+        if serializer.is_valid():
+            return Response(serializer.data, status=200)
+    
+    # def destroy(self, request, pk=None):
 
-    #     # 팀 생성
-    #     def create(self, request):
-    #         serializer = TeamSerializer(data=request.data)
-    #         if serializer.validate(request.data) and serializer.is_valid(request.data):
-    #             serializer.save()
-    #             return Response(serializer.data, status=200)
+    def create(self, request):
+        serializer = LinkedTeamUserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=200)
+
+
+class TeamListCreateView(generics.ListCreateAPIView):
+    queryset = Team.objects.all()
+    serializer_class = TeamSerializer
+    authentication_classes = [CustomJSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    # 팀 생성
+    def create(self, request):
+        serializer = TeamSerializer(data=request.data)
+        if serializer.validate(request.data) and serializer.is_valid(request.data):
+            serializer.save()
+            return Response(serializer.data, status=200)
 
 # class TeamRetrieveDestroyView(generics.RetrieveDestroyAPIView):
 #     queryset = Team.objects.all()
