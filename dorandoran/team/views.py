@@ -21,7 +21,7 @@ class ReadOnlyTeamViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = TeamSerializer(queryset, many=True)
         return Response(serializer.data)
 
-    def retrieve(self, request, pk=None):
+    def retrieve(self, request, pk=None): # problem
         team_obj = Team.objects.get(team_id=pk)
         members_obj = Team.objects.filter(team_id=pk)
 
@@ -54,7 +54,13 @@ class MemberViewSet(viewsets.ViewSet):
 
     authentication_classes = [CustomJSONWebTokenAuthentication]
     permissions_classes = [permissions.IsAuthenticated & isTeacherOrNotDelete]
-
+     
+    def create(self, request):
+        serializer = LinkedTeamUserSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=200)
+            
     def list(self, request, *args, **kwargs):
         quueryset = LinkedTeamUser.objects.filter(email=request.user.email)
         serializer = LinkedTeamUserSerializer(data=queryset)
@@ -68,33 +74,7 @@ class MemberViewSet(viewsets.ViewSet):
             serializer.delete()
             return Response(status=202)
 
-    def create(self, request):
-        serializer = LinkedTeamUserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=200)
-
-
-class TeamListCreateView(generics.ListCreateAPIView):
-    queryset = Team.objects.all()
-    serializer_class = TeamSerializer
-    authentication_classes = [CustomJSONWebTokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
-
-    # 팀 생성
-    def create(self, request):
-        serializer = TeamSerializer(data=request.data)
-        if serializer.validate(request.data) and serializer.is_valid(request.data):
-            serializer.save()
-            return Response(serializer.data, status=200)
-
-# class TeamRetrieveDestroyView(generics.RetrieveDestroyAPIView):
-#     queryset = Team.objects.all()
-#     serializer_class = TeamSerializer
-#     authentication_classes = [CustomJSONWebTokenAuthentication]
-#     permission_classes = [permissions.IsAuthenticated & Is]
-
-
+   
 # class TeamJoinView(generics.CreateAPIView):
 #     authentication_classes = [CustomJSONWebTokenAuthentication]
 #     permission_classes = [permissions.IsAuthenticated]
