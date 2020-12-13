@@ -61,7 +61,12 @@ class MemberViewSet(viewsets.ViewSet):
         if serializer.is_valid():
             return Response(serializer.data, status=200)
     
-    # def destroy(self, request, pk=None):
+    def destroy(self, request, pk=None):
+        queryset = LinkedTeamUser.objects.get(pk=pk)
+        serializer = LinkedTeamUserSerializer(data=queryset)
+        if serializer.is_valid():
+            serializer.delete()
+            return Response(status=202)
 
     def create(self, request):
         serializer = LinkedTeamUserSerializer(data=request.data)
