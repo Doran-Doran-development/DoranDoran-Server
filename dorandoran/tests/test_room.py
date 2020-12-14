@@ -33,40 +33,46 @@ class RoomCreate(TestCase):
             "max_team":2,
         }
 
+        normal_user_login = {
+            "email" : "seojin@gmail.com",
+            "password" : "0128gksqls",
+        }
+
+        teacher_user_login = { 
+            "email" : "teacher@gmail.com",
+            "password" : "0128gksqls",
+        }
+
         response = client.post(
-            "/auth/login", normal_user,
+            "/auth/login", normal_user_login,
             content_type="application/json"
         )
 
         self.student_token = response.json()["token"]
 
         response = client.post(
-            "/auth/login", teacher_user,
+            "/auth/login", teacher_user_login,
             content_type="application/json"
         )
 
         self.teacher_token = response.json()["token"]
-
     def tearDown(self):
         Room.objects.all().delete()
         User.objects.all().delete()
 
     def test_create_room_success(self):
-        room = self.base_room_form
-
         response = client.post(
-            '/room', room, content_type='application/json',
-            headers={'Authorization': 'jwt {}'.format(self.teacher_token)}
+            '/room/', self.base_room_form, content_type='application/json',
+            HTTP_AUTHORIZATION= "jwt "+ self.teacher_token
         )
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_create_room_failed_with_incorrect_form(self):
         room = self.base_room_form
-        del room['name']
+        del room["name"]
 
-        response = client.post('/room',room,content_type='application/json')
-
+        response = client.post('/room/',room,content_type='application/json',HTTP_AUTHORIZATION= "jwt "+ self.teacher_token)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
@@ -75,7 +81,7 @@ class RoomCreate(TestCase):
 
         room['owner'] = 0
 
-        response = client.post('/room',room,content_type='application/json')
+        response = client.post('/room',room,content_type='application/json',HTTP_AUTHORIZATION= "jwt "+ self.teacher_token)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
