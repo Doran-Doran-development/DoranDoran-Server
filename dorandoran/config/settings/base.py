@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "room",
     "account",
+    "reserve",
 ]
 
 MIDDLEWARE = [
