@@ -8,8 +8,10 @@ class ReservationQueue(models.Model):
     reserve_time = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+    reserver_id = models.ForeignKey("account.User", on_delete=models.CASCADE)
+
     class Meta:
         db_table = u"reservation_queue"
-    
-    def __str__:
-        return team_id + "팀의 " +reserve_time + "교시 예약 요청"
+
+    def __str__():
+        return team_id + "팀의 " + reserve_time + "교시 예약 요청"
