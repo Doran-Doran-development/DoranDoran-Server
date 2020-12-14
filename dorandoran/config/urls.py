@@ -24,6 +24,7 @@ urlpatterns = [
     path("auth/", include("account.urls")),
     path("room/", include("room.urls")),
     path("team/", include("team.urls")),
+    path("reserve/", include("reserve.urls")),
     path(
         "swagger<str:format>",
         schema_view.without_ui(cache_timeout=0),
