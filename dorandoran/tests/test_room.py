@@ -76,12 +76,3 @@ class RoomCreate(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
-    def test_create_room_failed_with_incorrect_owner(self):
-        room = self.base_room_form
-
-        room['owner'] = 0
-
-        response = client.post('/room',room,content_type='application/json',HTTP_AUTHORIZATION= "jwt "+ self.teacher_token)
-
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
