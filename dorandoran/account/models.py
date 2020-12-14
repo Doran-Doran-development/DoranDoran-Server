@@ -52,4 +52,7 @@ class User(AbstractUser):
     )
 
     USERNAME_FIELD = "email"
+    
+    class Meta:
+        db_table = u"User"
     REQUIRED_FIELDS = []
