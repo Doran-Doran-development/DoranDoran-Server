@@ -13,16 +13,16 @@ class CreateUserSerializer(serializers.ModelSerializer):
         fields = ('email', 'password', 'name', 'is_teacher')
     
     def create(self, validated_data):
-        validated_data['password'] = make_password(validated_data['password'])
+        validated_data["password"] = make_password(validated_data["password"])
         return User.objects.create(**validated_data)
 
 
 class LoginUserSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=128)
     password = serializers.CharField()
-    
+
     def validate(self, data):
-        user = authenticate(data) # backend.authenticate 쓰고
+        user = authenticate(data)  # backend.authenticate 쓰고
         if user is None:
             msg = _("User instance not exists")
             raise serializers.ValidationError(msg)
@@ -33,9 +33,9 @@ class LoginUserSerializer(serializers.Serializer):
             "is_teacher" : user.is_teacher,
             "is_active" : user.is_active
         }
-        token = utils.jwt_encode_handler(payload) # token 만들고
-        
-        return user,token # user, token 반환
+        token = utils.jwt_encode_handler(payload)  # token 만들고
+
+        return user, token  # user, token 반환
 
 
 class UserSerializer(serializers.ModelSerializer):
