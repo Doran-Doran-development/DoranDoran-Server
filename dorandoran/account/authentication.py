@@ -1,6 +1,7 @@
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework import exceptions
 from django.core.exceptions import ImproperlyConfigured
+from django.utils.translation import ugettext as _
 
 from .models import User
 
