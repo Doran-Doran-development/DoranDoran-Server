@@ -5,5 +5,4 @@ from .models import ReservationQueue
 class ReservationQueueSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReservationQueue
-        fields = "__all__"
-    
+        exclude = ("reserver_id",)
