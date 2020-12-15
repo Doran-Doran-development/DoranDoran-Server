@@ -18,6 +18,9 @@ class UserManager(BaseUserManager):
         return user
 
     def create_teacher(self, email, password, **extra_fields):
+        # if not extra_fields.get("teacher_code") in teacher_code_list:
+        #   raise ValueError("teacher_code is not valid")
+
         extra_fields.setdefault("role", 2)
         extra_fields.setdefault("is_active", True)
 
@@ -27,6 +30,9 @@ class UserManager(BaseUserManager):
         return self.create_user(email=email, password=password, **extra_fields)
 
     def create_superuser(self, email, password, **extra_fields):
+        # if not extra_fields.get("admin_code") in admin_code_list:
+        #   raise ValueError("admin_code is not valid")
+
         extra_fields.setdefault("role", 1)
         extra_fields.setdefault("is_active", True)
 
