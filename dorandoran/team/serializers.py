@@ -10,8 +10,8 @@ class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
         fields = "__all__"
-
-    def validate(self, obj):
+    
+    def validate_post_format(self, obj):
 
         teacher = obj["teacher"]
         project = obj["project"]
@@ -27,7 +27,7 @@ class TeamSerializer(serializers.ModelSerializer):
         if not is_valid_project:
             msg = _("is not valid project name format")
             raise ValidationError(msg)
-
+        
         return obj
 
     def is_teacher(self, email):
@@ -41,7 +41,15 @@ class TeamSerializer(serializers.ModelSerializer):
         if not project_format.search(project):
             return False
         return True
-
+    
+    def is_empty_team(self):
+        instance = self.initial_data
+        
+        if not instance:
+            msg = _("There's no team")
+            raise ValidationError(msg, code=204)
+        return False
+        
 class LinkedTeamUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = LinkedTeamUser
