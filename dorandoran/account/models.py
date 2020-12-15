@@ -3,6 +3,18 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 
 
+class Role(models.Model):
+    STUDENT = 1
+    TEACHER = 2
+    ADMIN = 3
+    ROLE_CHOICES = ((STUDENT, "student"), (TEACHER, "teacher"), (ADMIN, "admin"))
+
+    id = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, primary_key=True)
+
+    def __str__(self):
+        return str(id)
+
+
 class UserManager(BaseUserManager):
 
     use_in_migrations = True
@@ -38,13 +50,9 @@ class User(AbstractUser):
     name = models.CharField(
         _("username"),
         max_length=150,
-        help_text=_(
-            "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
-        ),
+        help_text=_("Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."),
     )
-    email = models.EmailField(
-        _("email address"), unique=True, max_length=128, primary_key=True
-    )
+    email = models.EmailField(_("email address"), unique=True, max_length=128, primary_key=True)
     is_teacher = models.BooleanField(
         _("teacher status"),
         default=False,
@@ -52,7 +60,8 @@ class User(AbstractUser):
     )
 
     USERNAME_FIELD = "email"
-    
+
     class Meta:
         db_table = u"User"
+
     REQUIRED_FIELDS = []
