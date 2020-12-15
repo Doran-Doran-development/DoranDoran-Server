@@ -23,29 +23,17 @@ ROOT_DIR = os.path.dirname(BASE_DIR)
 
 # ======== SECRET FILE 경로 설정 ========
 CONFIG_SECRET_DIR = os.path.join(ROOT_DIR, ".config_secret")
-CONFIG_SECRET_COMMON_FILE = os.path.join(CONFIG_SECRET_DIR, "settings_common.json")
+CONFIG_SECRET_FILE = os.path.join(CONFIG_SECRET_DIR, "settings_common.json")
 # ======================================
 
 # ======= SECRET FILE json으로 가져오기 ========
-if os.path.isfile(CONFIG_SECRET_COMMON_FILE):
+if os.path.isfile(CONFIG_SECRET_FILE):
     # 로컬 환경 또는 배포 환경
-    config_secret_common = json.loads(open(CONFIG_SECRET_COMMON_FILE).read())
+    config_secret_file = json.loads(open(CONFIG_SECRET_FILE).read())
 else:
     # 테스팅 환경 (환경변수로 지정해야댐)
-    config_secret_common = json.loads(os.environ["SECRET_SETTING"])
+    config_secret_file = json.loads(os.environ["SECRET_SETTING"])
 # ======================================
-
-SECRET_KEY = config_secret_common["django"]["secret_key"]  # Django Secret key
-
-# ======= JWT 설정 =======
-JWT_AUTH = {
-    "JWT_ALLOW_REFRESH": True,
-    "JWT_SECRET_KEY": config_secret_common["jwt"]["secret_key"],
-    "JWT_ALGORITHM": config_secret_common["jwt"]["algorithm"],
-}
-# ========================
-
-DATABASES = config_secret_common["django"]["database"]  # DB 설정
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
