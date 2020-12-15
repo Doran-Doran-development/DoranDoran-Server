@@ -6,6 +6,7 @@ from rest_framework.decorators import action
 from .models import Team, LinkedTeamUser
 from account.models import User
 from .serializers import TeamSerializer, LinkedTeamUserSerializer
+from account.authentication import CustomJSONWebTokenAuthentication
 from rest_framework_jwt.authentication import JSONWebTokenAuthentication
 from rest_framework import permissions
 
@@ -15,7 +16,7 @@ from rest_framework import permissions
 class TeamListCreateView(generics.ListCreateAPIView):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
-    authentication_classes = JSONWebTokenAuthentication
+    authentication_classes = [CustomJSONWebTokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     # 팀 생성
@@ -50,8 +51,6 @@ class TeamView(generics.ListAPIView):
     def list(self, request, email=None):
         queryset = LinkedTeamUser.objects.filter(email=email)
         if not queryset:
-            return Response(
-                {"msg": "{} never joined any team".format(email)}, status=404
-            )
+            return Response({"msg": "{} never joined any team".format(email)}, status=404)
         serializer = LinkedTeamUserSerializer(data=queryset)
         return Response(serializer.data, status=200)
