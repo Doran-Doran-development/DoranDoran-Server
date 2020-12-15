@@ -14,22 +14,37 @@ from .permissions import isTeacherOrNotDelete
 # Create your views here.
 
 class ReadOnlyTeamViewSet(viewsets.ReadOnlyModelViewSet):
+
     queryset = Team.objects.all()
+    serializer_class = TeamSerializer
 
     def list(self, request):
         queryset = self.get_queryset()
         serializer = TeamSerializer(queryset, many=True)
         return Response(serializer.data)
 
-    def retrieve(self, request, pk=None): # problem
-        team_obj = Team.objects.get(team_id=pk)
-        members_obj = Team.objects.filter(team_id=pk)
-
-        team_serializer = TeamSerializer(data=team_obj)
+    def retrieve(self, request, pk=None):
+        team_obj = Team.objects.get(pk=pk)
+        members_obj = LinkedTeamUser.objects.filter(team_id=pk)
+    
+        team_serializer = TeamSerializer(data=team_obj.__dict__)
         members_serializer = LinkedTeamUserSerializer(data=members_obj, many=True)
-        if team_serializer.is_valid() and members_serializer.is_valid():
-            
-            return Response(team_serializer.data, members_serializer.data) 
+        
+        if team_serializer.is_empty_team():
+            return Response(ValidationError("empty content"), status=204)
+
+        if not team_serializer.is_valid():
+            print("It's Team error")
+            return Response(team_serializer.errors)
+
+        if members_serializer.is_valid():
+            print("It's Team error")
+            return Response(members_serializer.errors)
+        
+        print(team_serializer.validated_data)
+        result_team_obj = team_serializer.validated_data
+        result_team_obj.update(members_serializer.data)
+        return Response(result_team_obj)
             
 class TeamViewSet(viewsets.ViewSet):
     
@@ -38,70 +53,47 @@ class TeamViewSet(viewsets.ViewSet):
 
     def create(self, request):
         serializer = TeamSerializer(data=request.data)
-        if serializer.validate(request.data) and serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=200)
+        if not serializer.validate_post_format(request.data):
+            return Response(serializer.errors)
+        if not serializer.is_valid():
+            return Response(serializer.errors)
+        serializer.save()
+        return Response(serializer.data, status=200)
     
-    def destroy(self, request, *args, **kwargs):
+    def destroy(self, request, pk=None):
         queryset = Team.objects.get(pk=pk)
         serializer = TeamSerializer(data=queryset)
         if not serializer.is_valid():
-            return ValidationError()
+            return Response(serializer.errors)
         serializer.delete()
         return Response(status=202)
     
 class MemberViewSet(viewsets.ViewSet):
 
     authentication_classes = [CustomJSONWebTokenAuthentication]
-    permissions_classes = [permissions.IsAuthenticated & isTeacherOrNotDelete]
+    permissions_classes = [permissions.IsAuthenticated]
      
     def create(self, request):
         serializer = LinkedTeamUserSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=200)
-            
-    def list(self, request, *args, **kwargs):
+        if not serializer.is_valid():
+            return Response(serializer.errors)
+
+        serializer.save()
+        obj = LinkedTeamUser.objects.filter(team_id=request.data["team_id"])
+        members_obj = LinkedTeamUserSerializer(data=obj)
+        return Response(members_obj.data, status=200)
+    
+    def retrieve(self, request, pk=None):
         quueryset = LinkedTeamUser.objects.filter(email=request.user.email)
-        serializer = LinkedTeamUserSerializer(data=queryset)
-        if serializer.is_valid():
-            return Response(serializer.data, status=200)
+        serializer = LinkedTeamUserSerializer(data=queryset, many=True)
+        if not serializer.is_valid():
+            return Response(serializer.errors)
+        return Response(serializer.data, status=200)
     
     def destroy(self, request, pk=None):
         queryset = LinkedTeamUser.objects.get(pk=pk)
         serializer = LinkedTeamUserSerializer(data=queryset)
-        if serializer.is_valid():
-            serializer.delete()
-            return Response(status=202)
-
-   
-# class TeamJoinView(generics.CreateAPIView):
-#     authentication_classes = [CustomJSONWebTokenAuthentication]
-#     permission_classes = [permissions.IsAuthenticated]
-#     queryset = LinkedTeamUser.objects.all()
-#     serializer_class = LinkedTeamUserSerializer
-
-
-# class TeamOutView(generics.DestroyAPIView):
-#     authentication_classes = [CustomJSONWebTokenAuthentication]
-#     permission_classes = [permissions.IsAuthenticated]
-#     queryset = LinkedTeamUser.objects.all()
-#     serializer_class = LinkedTeamUserSerializer
-
-#     def destroy(self, request, email=None, team_id=None):
-#         serializer = LinkedTeamUserSerializer(data={"email": email, "team_id": team_id})
-#         if not serializer.is_valid():
-#             return Response({"msg": "invalid email, "}, status=400)
-
-
-# class TeamView(generics.ListAPIView):
-#     authentication_classes = [CustomJSONWebTokenAuthentication]
-#     permission_classes = [permissions.IsAuthenticated]
-#     def list(self, request, email=None):
-#         queryset = LinkedTeamUser.objects.filter(email=email)
-#         if not queryset:
-#             return Response(
-#                 {"msg": "{} never joined any team".format(email)}, status=404
-#             )
-#         serializer = LinkedTeamUserSerializer(data=queryset)
-#         return Response(serializer.data, status=200)
+        if not serializer.is_valid():
+            return Response(serializer.errors)
+        serializer.delete()
+        return Response(status=202)
