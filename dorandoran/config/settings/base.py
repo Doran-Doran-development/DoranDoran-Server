@@ -56,6 +56,13 @@ AUTHENTICATION_BACKENDS = ["account.backends.UserBackend"]
 
 AUTH_USER_MODEL = "account.User"
 
+
+REST_FRAMEWORK = {
+   'DEFAULT_AUTHENTICATION_CLASSES': (
+   ),
+   'DEFAULT_PERMISSION_CLASSES': (
+   ),
+}
 # Application definition
 
 INSTALLED_APPS = [
