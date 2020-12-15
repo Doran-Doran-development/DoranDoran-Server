@@ -17,8 +17,25 @@ from django.contrib import admin
 from django.urls import path, include
 from .yasg import *
 
+schema_url_patterns =[
+    
+    path("auth/", include("account.urls")),
+    path("team/", include("team.urls")),
+    path("room/", include("room.urls")),
+]
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="DoranDoran Open API",
+        default_version="v1",
+        terms_of_service="https://www.google.com/policies/terms/",
+    ),
+    public=True,
+    patterns=schema_url_patterns,
+)
+
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    
     path("auth/", include("account.urls")),
     path("team/", include("team.urls")),
     path("room/", include("room.urls")),
