@@ -35,18 +35,6 @@ else:
     config_secret_file = json.loads(os.environ["SECRET_SETTING"])
 # ======================================
 
-SECRET_KEY = config_secret_file["django"]["secret_key"]  # Django Secret key
-
-# ======= JWT 설정 =======
-JWT_AUTH = {
-    "JWT_ALLOW_REFRESH": True,
-    "JWT_SECRET_KEY": config_secret_file["jwt"]["secret_key"],
-    "JWT_ALGORITHM": config_secret_file["jwt"]["algorithm"],
-}
-# ========================
-
-DATABASES = config_secret_file["django"]["database"]  # DB 설정
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
