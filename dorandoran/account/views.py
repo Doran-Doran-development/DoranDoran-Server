@@ -9,12 +9,14 @@ from .models import User
 class RegistrationView(generics.CreateAPIView):
     serializer_class = CreateUserSerializer
     queryset = User.objects.all()
+    authentication_classes = []
     permission_classes = [AllowAny]
 
 
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginUserSerializer
     queryset = User.objects.all()
+    authentication_classes = []
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
