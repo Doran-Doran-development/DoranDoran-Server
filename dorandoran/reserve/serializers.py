@@ -1,7 +1,8 @@
 from rest_framework import serializers
+from django.utils.translation import ugettext as _
+
 from .models import ReservationQueue
 from account.serializers import UserSerializer
-from django.utils.translation import ugettext as _
 
 
 class ReservationQueueSerializer(serializers.ModelSerializer):
