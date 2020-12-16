@@ -1,5 +1,5 @@
 from rest_framework.permissions import BasePermission
-from reserve.models import ReservationQueue
+from .models import ReservationQueue
 
 
 class ReservePermission(BasePermission):
