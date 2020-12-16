@@ -1,17 +1,21 @@
 from rest_framework import generics, status
+from rest_framework.response import Response
+from rest_framework.permissions import AllowAny
+
 from .serializers import CreateUserSerializer, LoginUserSerializer, UserSerializer
 from .models import User
-from rest_framework.response import Response
 
 
 class RegistrationView(generics.CreateAPIView):
     serializer_class = CreateUserSerializer
     queryset = User.objects.all()
+    permission_classes = [AllowAny]
 
 
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginUserSerializer
     queryset = User.objects.all()
+    permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)  # serializer화 시키고
