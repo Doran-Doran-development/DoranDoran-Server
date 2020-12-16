@@ -6,7 +6,7 @@ from account.models import User
 
 class TeamPermission(BasePermission):
     def is_teacher(value):
-        queryset = User.objects.filter(email=value).filter(is_teacher=True)
+        queryset = User.objects.filter(email=value).filter(role=2)
         if not queryset.exists():
             return
         return True
