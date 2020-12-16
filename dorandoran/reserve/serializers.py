@@ -10,7 +10,6 @@ class ReservationQueueSerializer(serializers.ModelSerializer):
         fields = "__all__"
         extra_kwargs = {"reserver_id": {"required": False}}
 
-    
     def create(self, validated_data):
         self.validate_duplicate_reservation(validated_data)
 
@@ -23,6 +22,8 @@ class ReservationQueueSerializer(serializers.ModelSerializer):
             room_id=data["room_id"], team_id=data["team_id"]
         )
 
-        if exist_reservation is not None:
+        if exist_reservation:
             msg = _("room_id is already reserved by your team")
             raise serializers.ValidationError(msg)
+
+        return
