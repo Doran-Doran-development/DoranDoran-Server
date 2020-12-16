@@ -1,15 +1,20 @@
-from rest_framework import viewsets, permissions
+from rest_framework import viewsets
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+
 from account.authentication import CustomJSONWebTokenAuthentication
-from .serializers import ReservationQueueSerializer
 from account.serializers import UserSerializer
-from .models import ReservationQueue
 from account.models import User
+
+from .serializers import ReservationQueueSerializer
+from .models import ReservationQueue
+from .permissions import ReservePermission
 
 
 class ReservationViewSet(viewsets.ModelViewSet):
     authentication_classes = [CustomJSONWebTokenAuthentication]
     serializer_class = ReservationQueueSerializer
+    permission_classes = [IsAuthenticated, ReservePermission]
     queryset = ReservationQueue.objects.all()
 
     def create(self, request, *args, **kwargs):  # 학생만 가능
