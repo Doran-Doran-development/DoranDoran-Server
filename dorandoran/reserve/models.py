@@ -14,6 +14,3 @@ class ReservationQueue(models.Model):
 
     class Meta:
         db_table = u"reservation_queue"
-
-    def __str__(self):
-        return str(self.team_id) + "팀의 " + str(self.reserve_time) + "교시 예약 요청"
