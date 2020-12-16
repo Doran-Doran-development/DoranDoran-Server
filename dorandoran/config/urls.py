@@ -7,6 +7,7 @@ schema_url_patterns = [
     path("auth/", include("account.urls")),
     path("room/", include("room.urls")),
     path("team/", include("team.urls")),
+    path("reserve/", include("reserve.urls")),
 ]
 
 schema_view = get_schema_view(
@@ -24,6 +25,7 @@ urlpatterns = [
     path("auth/", include("account.urls")),
     path("room/", include("room.urls")),
     path("team/", include("team.urls")),
+    path("reserve/", include("reserve.urls")),
     path(
         "swagger<str:format>",
         schema_view.without_ui(cache_timeout=0),
