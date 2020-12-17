@@ -40,7 +40,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-AUTHENTICATION_BACKENDS = ["account.backends.UserBackend"]
+# AUTHENTICATION_BACKENDS = ["account.backends.UserBackend"]
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
@@ -53,6 +53,7 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = "account.User"
 
+ROLE_CHOICES = ((1, "admin"), (2, "teacher"), (3, "student"))
 # Application definition
 
 INSTALLED_APPS = [
