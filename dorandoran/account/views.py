@@ -1,8 +1,13 @@
-from rest_framework import generics, status
+from rest_framework import generics, status, mixins
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from .serializers import CreateUserSerializer, LoginUserSerializer, UserSerializer
+from .serializers import (
+    CreateUserSerializer,
+    LoginUserSerializer,
+    UserSerializer,
+    RefreshJSONWebTokenSerializer,
+)
 from .models import User
 
 
@@ -23,8 +28,18 @@ class LoginView(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)  # serializer화 시키고
         if not serializer.is_valid():  # is_valid로 확인 하고
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        user, token = serializer.validated_data  # serializer_data 받아서 리턴
+        token = serializer.validated_data  # serializer_data 받아서 리턴
         return Response(
-            {"user": UserSerializer(user).data, "token": token},
+            {"success": True, "token": token},
             status=status.HTTP_200_OK,
         )
+
+
+class SignOutView(generics.GenericAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, *args, **kwargs):
+        current_user = User.objects.get(email=request.user.email)
+        current_user.delete()
+        return Response(status=200)
