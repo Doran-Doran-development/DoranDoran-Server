@@ -1,18 +1,13 @@
-from rest_framework import viewsets
-from rest_framework import generics
-from rest_framework import mixins
+from rest_framework import viewsets, generics, mixins
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
-from account.authentication import CustomJSONWebTokenAuthentication
+from rest_framework import status, permissions
 
+from account.authentication import CustomJSONWebTokenAuthentication
 from .permissions import IsTeacherOrReadOnly
-from .models import Room
 from .serializers import RoomSerializer
-from django.shortcuts import get_object_or_404
-from rest_framework import permissions
-from django.db.models import Count
-import json
+from .models import Room
+
 
 
 class RoomViewSet(viewsets.ViewSet):
