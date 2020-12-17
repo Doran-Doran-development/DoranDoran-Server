@@ -24,6 +24,7 @@ class ReadOnlyTeamViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
+    
         team_obj = Team.objects.get(pk=pk)
         members_obj = LinkedTeamUser.objects.filter(team_id=pk)
     
@@ -61,6 +62,7 @@ class TeamViewSet(viewsets.ViewSet):
         return Response(serializer.data, status=200)
     
     def destroy(self, request, pk=None):
+
         queryset = Team.objects.get(pk=pk)
         serializer = TeamSerializer(data=queryset)
         if not serializer.is_valid():
