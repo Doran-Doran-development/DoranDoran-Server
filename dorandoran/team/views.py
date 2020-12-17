@@ -42,21 +42,22 @@ class ReadOnlyTeamViewSet(viewsets.ReadOnlyModelViewSet):
         return Response(serializer.data)
 
     def retrieve(self, request, pk=None):
-        team_obj = Team.objects.get(pk=pk)
+        print(pk)
+        team_obj = Team.objects.get(team_id=pk)
         members_obj = LinkedTeamUser.objects.filter(team_id=pk)
-    
-        team_serializer = TeamSerializer(data=team_obj.__dict__)
+        print(team_obj.__dict__)
+        team_serializer = self.get_serializer(data=team_obj.__dict__)
         members_serializer = LinkedTeamUserSerializer(data=members_obj, many=True)
         
         if team_serializer.is_empty_team():
             return Response(ValidationError("empty content"), status=204)
-
+        
         if not team_serializer.is_valid():
-            print("It's Team error")
+            print("team error")
             return Response(team_serializer.errors)
 
-        if members_serializer.is_valid():
-            print("It's Team error")
+        if not members_serializer.is_valid():
+            print("member error")
             return Response(members_serializer.errors)
         
         print(team_serializer.validated_data)

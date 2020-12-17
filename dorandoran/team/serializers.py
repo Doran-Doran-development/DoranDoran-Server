@@ -12,7 +12,6 @@ class TeamSerializer(serializers.ModelSerializer):
         fields = "__all__"
     
     def validate_post_format(self, obj):
-
         teacher = obj["teacher"]
         project = obj["project"]
 
@@ -32,6 +31,7 @@ class TeamSerializer(serializers.ModelSerializer):
 
     def is_teacher(self, email):
         queryset = User.objects.filter(email=email).filter(role=2)
+        print(queryset)
         if not queryset.exists():
             return False
         return True
@@ -44,7 +44,7 @@ class TeamSerializer(serializers.ModelSerializer):
     
     def is_empty_team(self):
         instance = self.initial_data
-        
+        print(instance)
         if not instance:
             msg = _("There's no team")
             raise ValidationError(msg, code=204)
