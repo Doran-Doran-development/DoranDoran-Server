@@ -50,7 +50,6 @@ class RefreshJSONWebTokenView(generics.GenericAPIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
-        print(request.headers)
         serializer = self.get_serializer(data=request.headers)  # serializer화 시키고
         if not serializer.is_valid():  # is_valid로 확인 하고
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
