@@ -12,6 +12,24 @@ from .permissions import isTeacherOrNotDelete
 
 
 # Create your views here.
+from rest_framework_jwt.authentication import JSONWebTokenAuthentication
+from rest_framework import permissions
+
+# Create your views here.
+
+
+class TeamListCreateView(generics.ListCreateAPIView):
+    queryset = Team.objects.all()
+    serializer_class = TeamSerializer
+    authentication_classes = [CustomJSONWebTokenAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    # 팀 생성
+    def create(self, request):
+        serializer = TeamSerializer(data=request.data)
+        if serializer.validate(request.data) and serializer.is_valid(request.data):
+            serializer.save()
+            return Response(serializer.data, status=200)
 
 class ReadOnlyTeamViewSet(viewsets.ReadOnlyModelViewSet):
 

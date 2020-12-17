@@ -31,7 +31,7 @@ class TeamSerializer(serializers.ModelSerializer):
         return obj
 
     def is_teacher(self, email):
-        queryset = User.objects.filter(email=email).filter(is_teacher=True)
+        queryset = User.objects.filter(email=email).filter(role=2)
         if not queryset.exists():
             return False
         return True
