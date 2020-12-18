@@ -24,7 +24,7 @@ class RoomCreate(TestCase):
             "name" : "teacher",
             "email" : "teacher@gmail.com",
             "password" : make_password("0128gksqls"),
-            "is_teacher" : True
+            "role" : 2
         }
         User.objects.create(**teacher_user)
 
