@@ -35,6 +35,17 @@ class LoginView(generics.GenericAPIView):
         )
 
 
+class UserInfoView(generics.GenericAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        current_user = User.objects.get(email=request.user.email)
+        serializer = self.get_serializer(current_user)
+
+        return Response(serializer.data, status=200)
+
+
 class SignOutView(generics.GenericAPIView):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
