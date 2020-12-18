@@ -40,7 +40,7 @@ class RoomViewSet(viewsets.ViewSet):
             return Response(serializer.errors)
 
         serializer.save()
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def retrieve(self, request, pk=None):
         queryset = Room.objects.get(pk=pk)
