@@ -2,34 +2,55 @@ import re
 from rest_framework import serializers
 from django.utils.translation import ugettext as _
 from .models import Team, LinkedTeamUser
+from account.models import User
 from rest_framework.exceptions import ValidationError
-from .permissions import TeamPermission
 
 
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
         fields = "__all__"
+    
+    def validate_post_format(self, obj):
+        teacher = obj["teacher"]
+        project = obj["project"]
 
-    def validate(self, req):
-        teacher = req["teacher"]
-        project = req["project"]
-
-        is_valid_teacher = TeamPermission.is_teacher(teacher)
-        if is_valid_teacher == None:
+        #유효한 교사 이메일인지 검사
+        is_valid_teacher = self.is_teacher(teacher)
+        if not is_valid_teacher:
             msg = _("User instance not exists")
             raise ValidationError(msg)
 
-        is_valid_project = TeamPermission.is_valid_project_name(project)
-
+        #프로젝트 이름이 형식에 맞는지 검사
+        is_valid_project = self.is_valid_project_name(project)
         if not is_valid_project:
             msg = _("is not valid project name format")
             raise ValidationError(msg)
+        
+        return obj
 
-        return req
+    def is_teacher(self, email):
+        queryset = User.objects.filter(email=email).filter(role=2)
+        print(queryset)
+        if not queryset.exists():
+            return False
+        return True
 
-
+    def is_valid_project_name(self, project):
+        project_format = re.compile("(.+)[-](.+)")
+        if not project_format.search(project):
+            return False
+        return True
+    
+    def is_empty_team(self):
+        instance = self.initial_data
+        print(instance)
+        if not instance:
+            msg = _("There's no team")
+            raise ValidationError(msg, code=204)
+        return False
+        
 class LinkedTeamUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = LinkedTeamUser
-        fields = ("team_id", "email")
+        fields = "__all__"

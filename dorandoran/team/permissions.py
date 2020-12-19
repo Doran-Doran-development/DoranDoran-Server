@@ -1,18 +1,7 @@
-import re
-from rest_framework.permissions import BasePermission
-from rest_framework.exceptions import ValidationError
-from account.models import User
+from rest_framework import permissions
 
-
-class TeamPermission(BasePermission):
-    def is_teacher(value):
-        queryset = User.objects.filter(email=value).filter(is_teacher=True)
-        if not queryset.exists():
-            return
-        return True
-
-    def is_valid_project_name(value):
-        project_format = re.compile("(.+)[-](.+)")
-        if not project_format.search(value):
-            return False
+class isTeacherOrNotDelete(permissions.BasePermission):
+    def has_permission(self, request, view):
+        if request.method == 'DELETE':
+            return bool(request.user.role == 2)
         return True
