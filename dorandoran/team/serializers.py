@@ -22,7 +22,7 @@ class TeamSerializer(serializers.ModelSerializer):
             raise ValidationError(msg)
 
         #프로젝트 이름이 형식에 맞는지 검사
-        is_valid_project = self.is_valid_project_name(project)
+        is_valid_project = self.is_right_project_name(project)
         if not is_valid_project:
             msg = _("is not valid project name format")
             raise ValidationError(msg)
@@ -36,12 +36,11 @@ class TeamSerializer(serializers.ModelSerializer):
             return False
         return True
 
-    def is_valid_project_name(self, project):
+    def is_right_project_name(self, project):
         project_format = re.compile("(.+)[-](.+)")
         if not project_format.search(project):
             return False
         return True
-    
     def is_empty_team(self):
         instance = self.initial_data
         print(instance)
