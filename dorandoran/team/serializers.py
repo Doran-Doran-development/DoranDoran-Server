@@ -48,7 +48,8 @@ class TeamSerializer(serializers.ModelSerializer):
             msg = _("There's no team")
             raise ValidationError(msg, code=204)
         return False
-        
+
+
 class LinkedTeamUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = LinkedTeamUser

@@ -23,7 +23,7 @@ ROOT_DIR = os.path.dirname(BASE_DIR)
 
 # ======== SECRET FILE 경로 설정 ========
 CONFIG_SECRET_DIR = os.path.join(ROOT_DIR, ".config_secret")
-CONFIG_SECRET_FILE = os.path.join(CONFIG_SECRET_DIR, "settings_common.json")
+CONFIG_SECRET_FILE = os.path.join(CONFIG_SECRET_DIR, "settings_develop.json")
 # ======================================
 
 # ======= SECRET FILE json으로 가져오기 ========
