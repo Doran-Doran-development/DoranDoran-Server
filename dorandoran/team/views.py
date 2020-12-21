@@ -5,27 +5,12 @@ from rest_framework import permissions
 from rest_framework.exceptions import ValidationError
 
 from account.authentication import CustomJSONWebTokenAuthentication
-from account.models import User
 from .models import Team, LinkedTeamUser
 from .serializers import TeamSerializer, LinkedTeamUserSerializer
 from .permissions import isTeacherOrNotDelete
 
 
 # Create your views here.
-
-
-class TeamListCreateView(generics.ListCreateAPIView):
-    queryset = Team.objects.all()
-    serializer_class = TeamSerializer
-    authentication_classes = [CustomJSONWebTokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
-
-    # 팀 생성
-    def create(self, request):
-        serializer = TeamSerializer(data=request.data)
-        if serializer.validate(request.data) and serializer.is_valid(request.data):
-            serializer.save()
-            return Response(serializer.data, status=200)
 
 class ReadOnlyTeamViewSet(viewsets.ReadOnlyModelViewSet):
 
