@@ -1,4 +1,4 @@
-from rest_framework import generics, status, mixins
+from rest_framework import generics, status, mixins, viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
@@ -9,6 +9,46 @@ from .serializers import (
     RefreshJSONWebTokenSerializer,
 )
 from .models import User
+
+
+class UserViewSet(viewsets.GenericViewSet):
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
+
+    def create(self, request, *args, **kwargs):  # allow any
+        serializer = CreateUserSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def retrieve(self, request, *args, **kwargs):  # allow any
+        user_instance = User.objects.get(email=kwargs["pk"])
+        serializer = self.get_serializer(user_instance)
+
+        return Response(serializer.data, status=200)
+
+    def list(self, request, *args, **kwargs):  # allow any
+        queryset = self.filter_queryset(self.get_queryset())
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def delete(self, request, *args, **kwargs):  # IsAdmin or IsMyself
+        user_instance = User.objects.get(email=kwargs["pk"])
+        user_instance.delete()
+        return Response(status=200)
+
+    def update(self, request, *args, **kwargs):  # IsAdmin or IsMyself
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+    # POST - create user
+    # GET - user get, list
+    # DELETE - user delete
+    # PUT - user Info modify
 
 
 class RegistrationView(generics.CreateAPIView):
@@ -35,7 +75,7 @@ class LoginView(generics.GenericAPIView):
         )
 
 
-class UserInfoView(generics.GenericAPIView):
+class MyUserInfoView(generics.GenericAPIView):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
 
