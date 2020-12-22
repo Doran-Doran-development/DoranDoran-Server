@@ -14,6 +14,8 @@ from .models import User
 class UserViewSet(viewsets.GenericViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.all()
+    lookup_field = "email"
+    lookup_url_kwarg = "pk"
 
     def create(self, request, *args, **kwargs):  # allow any
         serializer = CreateUserSerializer(data=request.data)
@@ -22,7 +24,7 @@ class UserViewSet(viewsets.GenericViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def retrieve(self, request, *args, **kwargs):  # allow any
-        user_instance = User.objects.get(email=kwargs["pk"])
+        user_instance = self.get_object()
         serializer = self.get_serializer(user_instance)
 
         return Response(serializer.data, status=200)
@@ -34,7 +36,7 @@ class UserViewSet(viewsets.GenericViewSet):
         return Response(serializer.data)
 
     def delete(self, request, *args, **kwargs):  # IsAdmin or IsMyself
-        user_instance = User.objects.get(email=kwargs["pk"])
+        user_instance = self.get_object()
         user_instance.delete()
         return Response(status=200)
 
