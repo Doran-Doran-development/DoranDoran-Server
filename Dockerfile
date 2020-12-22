@@ -1,13 +1,8 @@
 FROM python:3.7
-
-RUN mkdir /code
 WORKDIR /code
-ADD requirements.txt /code/
-
+COPY . .
 RUN pip install -r requirements.txt
 
-ADD . /code/
-
-CMD ["python", "./dorandoran/manage.py", "runserver", "0.0.0.0:8000"]
-
 EXPOSE 8000
+ENV DJANGO_SETTINGS_MODULE config.settings.dev
+CMD ["python", "dorandoran/manage.py", "runserver", "0.0.0.0:8000"]
