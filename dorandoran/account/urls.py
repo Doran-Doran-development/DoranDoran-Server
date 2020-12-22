@@ -4,7 +4,7 @@ from .views import (
     LoginView,
     SignOutView,
     RefreshJSONWebTokenView,
-    UserInfoView,
+    MyUserInfoView,
 )
 
 urlpatterns = [
@@ -12,5 +12,5 @@ urlpatterns = [
     path("login", LoginView.as_view()),
     path("sign-out", SignOutView.as_view()),
     path("refresh", RefreshJSONWebTokenView.as_view()),
-    path("my-info", UserInfoView.as_view()),
+    path("my-info", MyUserInfoView.as_view()),
 ]
