@@ -9,6 +9,7 @@ from .serializers import (
     RefreshJSONWebTokenSerializer,
 )
 from .models import User
+from .permissions import IsOwnerOrReadAndCreate
 
 
 class UserViewSet(viewsets.GenericViewSet):
@@ -16,6 +17,7 @@ class UserViewSet(viewsets.GenericViewSet):
     queryset = User.objects.all()
     lookup_field = "email"
     lookup_url_kwarg = "pk"
+    permission_classes = [IsOwnerOrReadAndCreate]
 
     def create(self, request, *args, **kwargs):  # allow any
         serializer = CreateUserSerializer(data=request.data)
