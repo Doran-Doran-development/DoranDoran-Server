@@ -6,23 +6,23 @@ from django.utils.translation import ugettext as _
 from .models import User
 
 
-def jwt_get_email_from_payload_handler(payload):
-    return payload.get("email")
+def jwt_get_uid_from_payload_handler(payload):
+    return payload.get("uid")
 
 
 class CustomJSONWebTokenAuthentication(JSONWebTokenAuthentication):
     def authenticate_credentials(self, payload):
         """
-        Returns an active user that matches the payload's user id and email.
+        Returns an active user that matches the payload's user id and uid.
         """
-        email = jwt_get_email_from_payload_handler(payload)
+        uid = jwt_get_uid_from_payload_handler(payload)
 
-        if not email:
+        if not uid:
             msg = _("Invalid payload.")
             raise exceptions.AuthenticationFailed(msg)
 
         try:
-            user = User.objects.get_by_natural_key(email)
+            user = User.objects.get_by_natural_key(uid)
         except User.DoesNotExist:
             msg = _("Invalid signature.")
             raise exceptions.AuthenticationFailed(msg)
