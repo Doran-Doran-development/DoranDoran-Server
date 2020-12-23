@@ -15,7 +15,7 @@ from .permissions import IsOwnerOrReadAndCreate
 class UserViewSet(viewsets.GenericViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.all()
-    lookup_field = "email"
+    lookup_field = "uid"
     lookup_url_kwarg = "pk"
     permission_classes = [IsOwnerOrReadAndCreate]
 
@@ -28,7 +28,6 @@ class UserViewSet(viewsets.GenericViewSet):
     def retrieve(self, request, *args, **kwargs):  # allow any
         user_instance = self.get_object()
         serializer = self.get_serializer(user_instance)
-
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def list(self, request, *args, **kwargs):  # allow any
