@@ -9,4 +9,4 @@ class IsOwnerOrReadAndCreate(BasePermission):
         if request.method in ALLOW_METHODS:  # GET, HEAD, OPTIONS
             return True
         elif request.method in ISOWNER_METHODS:
-            return request.user.uid == request.kwargs["pk"]
+            return request.user.uid == request.parser_context["kwargs"]["pk"]
