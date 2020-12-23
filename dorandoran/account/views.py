@@ -27,25 +27,25 @@ class UserViewSet(viewsets.GenericViewSet):
         user_instance = self.get_object()
         serializer = self.get_serializer(user_instance)
 
-        return Response(serializer.data, status=200)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def list(self, request, *args, **kwargs):  # allow any
         queryset = self.filter_queryset(self.get_queryset())
 
         serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-    def delete(self, request, *args, **kwargs):  # IsAdmin or IsMyself
+    def destroy(self, request, *args, **kwargs):  # IsAdmin or IsMyself
         user_instance = self.get_object()
         user_instance.delete()
-        return Response(status=200)
+        return Response(status=status.HTTP_200_OK)
 
     def update(self, request, *args, **kwargs):  # IsAdmin or IsMyself
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     # POST - create user
     # GET - user get, list
