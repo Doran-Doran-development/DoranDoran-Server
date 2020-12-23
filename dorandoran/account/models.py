@@ -44,13 +44,12 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractUser):
-    firstname = None
+    first_name = None
+    last_login = None
     last_name = None
     username = None
     is_staff = None
-    first_name = None
     is_superuser = None
-    last_login = None
 
     DEFAULT_ROLE_CHOICES = ((1, "admin"), (2, "teacher"), (3, "student"))
 
@@ -60,15 +59,17 @@ class User(AbstractUser):
 
     objects = UserManager()
 
+    uid = models.CharField(_("user id"), max_length=150, unique=True, primary_key=True)
+
     name = models.CharField(
         _("username"),
         max_length=150,
         help_text=_("Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."),
         default="unknown",
     )
-    email = models.EmailField(_("email address"), unique=True, max_length=128, primary_key=True)
+    email = models.EmailField(_("email address"), unique=True, max_length=128)
 
-    USERNAME_FIELD = "email"
+    USERNAME_FIELD = "uid"
 
     class Meta:
         db_table = u"User"
