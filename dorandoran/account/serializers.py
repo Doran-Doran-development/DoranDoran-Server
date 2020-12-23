@@ -13,7 +13,7 @@ from .utils import *
 class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("email", "password", "name", "role")
+        fields = ("uid", "email", "password", "name", "role")
         extra_kwargs = {"role": {"required": False}}
 
     def create(self, validated_data):
@@ -35,6 +35,7 @@ class LoginUserSerializer(serializers.Serializer):
             "username": attrs.get(User.USERNAME_FIELD),
             "password": attrs.get("password"),
         }
+        print(credentials)
         user = authenticate(**credentials)  # backend.authenticate 쓰고
 
         ## 여기부터 다시 하면 된다.
@@ -55,7 +56,7 @@ class RefreshJSONWebTokenSerializer(serializers.Serializer):
     def validate(self, attrs):
         token = attrs["Authorization"].split()[1]
         payload = jwt_decode_handler(token)  # check_payload 만들어서 expired 예외처리 해줘야됨
-        user = User.objects.get_by_natural_key(payload["email"])
+        user = User.objects.get_by_natural_key(payload["uid"])
 
         orig_iat = payload["iat"]  # refresh 요청 당시 시간
 
