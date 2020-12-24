@@ -1,12 +1,9 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 
-class IsOwnerOrReadAndCreate(BasePermission):
+class IsOwnerOrAdmin(BasePermission):
     def has_permission(self, request, view):
-        ALLOW_METHODS = ("GET", "HEAD", "OPTIONS", "POST")
-        ISOWNER_METHODS = ("DELETE", "PUT")
-
-        if request.method in ALLOW_METHODS:  # GET, HEAD, OPTIONS
+        if request.user.role == 1:
             return True
-        elif request.method in ISOWNER_METHODS:
-            return request.user.uid == request.parser_context["kwargs"]["pk"]
+
+        return request.user.uid == request.parser_context["kwargs"]["pk"]
