@@ -26,16 +26,23 @@ class UserViewSet(
     def get_permissions(self):
         if self.action in ("create", "list", "retrieve"):
             permission_classes = [AllowAny]
-        elif self.action in ("destroy", "change_name"):
+        elif self.action in ("destroy", "change_name", "change_password"):
             permission_classes = [IsOwnerOrAdmin]
         return [permission() for permission in permission_classes]
 
     @action(detail=True, methods=["patch"])
     def change_name(self, request, pk):
         current_user = self.get_object()
-        current_user.name = request.data["name"]
+        current_user.name = request.data["new_name"]
         current_user.save()
         return Response("change_name")
+
+    @action(detail=True, methods=["patch"])
+    def change_password(self, request, pk):
+        current_user = self.get_object()
+        current_user.set_password(request.data["new_password"])
+        current_user.save()
+        return Response("change password")
 
     # POST - create user
     # GET - user get, list
