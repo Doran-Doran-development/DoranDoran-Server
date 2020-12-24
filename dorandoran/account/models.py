@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
+from django.conf import settings
 
 
 class UserManager(BaseUserManager):
@@ -51,11 +52,9 @@ class User(AbstractUser):
     is_superuser = None
     last_login = None
 
-    ADMIN = 1
-    TEACHER = 2
-    STUDENT = 3
+    DEFAULT_ROLE_CHOICES = ((1, "admin"), (2, "teacher"), (3, "student"))
 
-    ROLE_CHOICES = ((ADMIN, "admin"), (TEACHER, "teacher"), (STUDENT, "student"))
+    ROLE_CHOICES = getattr(settings, "ROLE_CHOICES", DEFAULT_ROLE_CHOICES)
 
     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, default=3)
 

@@ -38,9 +38,9 @@ else:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
-AUTHENTICATION_BACKENDS = ["account.backends.UserBackend"]
+# AUTHENTICATION_BACKENDS = ["account.backends.UserBackend"]
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
@@ -60,6 +60,9 @@ REST_FRAMEWORK = {
    'DEFAULT_PERMISSION_CLASSES': (
    ),
 }
+
+ROLE_CHOICES = ((1, "admin"), (2, "teacher"), (3, "student"))
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -75,9 +78,11 @@ INSTALLED_APPS = [
     "account",
     "reserve",
     "team",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -107,6 +112,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
