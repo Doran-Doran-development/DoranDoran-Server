@@ -9,49 +9,30 @@ from .serializers import (
     RefreshJSONWebTokenSerializer,
 )
 from .models import User
-from .permissions import IsOwnerOrReadAndCreate
+from .permissions import IsOwnerOrAdmin
 
 
-class UserViewSet(viewsets.GenericViewSet):
-    serializer_class = UserSerializer
+class UserViewSet(
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
     queryset = User.objects.all()
-    lookup_field = "uid"
-    lookup_url_kwarg = "pk"
-    permission_classes = [IsOwnerOrReadAndCreate]
+    serializer_class = UserSerializer
 
-    def create(self, request, *args, **kwargs):  # allow any
-        serializer = CreateUserSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    def retrieve(self, request, *args, **kwargs):  # allow any
-        user_instance = self.get_object()
-        serializer = self.get_serializer(user_instance)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def list(self, request, *args, **kwargs):  # allow any
-        queryset = self.filter_queryset(self.get_queryset())
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def destroy(self, request, *args, **kwargs):  # IsAdmin or IsMyself
-        user_instance = self.get_object()
-        user_instance.delete()
-        return Response(status=status.HTTP_200_OK)
-
-    def update(self, request, *args, **kwargs):  # IsAdmin or IsMyself
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK)
+    def get_permissions(self):
+        if self.action in ("create", "list", "retrieve"):
+            permission_classes = [AllowAny]
+        elif self.action in ("destroy", "update", "partial_update"):
+            permission_classes = [IsOwnerOrAdmin]
+        return [permission() for permission in permission_classes]
 
     # POST - create user
     # GET - user get, list
     # DELETE - user delete
-    # PUT - user Info modify
+    # password 변경, 이름 변경 등은 따로 만들자
 
 
 class RegistrationView(generics.CreateAPIView):
