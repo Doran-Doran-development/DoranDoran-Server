@@ -50,6 +50,8 @@ class User(AbstractUser):
     username = None
     is_staff = None
     is_superuser = None
+    groups = None
+    user_permissions = None
 
     DEFAULT_ROLE_CHOICES = ((1, "admin"), (2, "teacher"), (3, "student"))
 
