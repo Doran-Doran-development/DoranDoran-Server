@@ -1,6 +1,7 @@
-from rest_framework import generics, status, mixins
+from rest_framework import generics, status, mixins, viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.decorators import action
 
 from .serializers import (
     CreateUserSerializer,
@@ -9,6 +10,37 @@ from .serializers import (
     RefreshJSONWebTokenSerializer,
 )
 from .models import User
+from .permissions import IsOwnerOrAdmin
+
+
+class UserViewSet(
+    mixins.CreateModelMixin,
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def get_permissions(self):
+        if self.action in ("create", "list", "retrieve"):
+            permission_classes = [AllowAny]
+        elif self.action in ("destroy", "change_name"):
+            permission_classes = [IsOwnerOrAdmin]
+        return [permission() for permission in permission_classes]
+
+    @action(detail=True, methods=["patch"])
+    def change_name(self, request, pk):
+        current_user = self.get_object()
+        current_user.name = request.data["name"]
+        current_user.save()
+        return Response("change_name")
+
+    # POST - create user
+    # GET - user get, list
+    # DELETE - user delete
+    # password 변경, 이름 변경 등은 따로 만들자
 
 
 class RegistrationView(generics.CreateAPIView):
@@ -35,7 +67,7 @@ class LoginView(generics.GenericAPIView):
         )
 
 
-class UserInfoView(generics.GenericAPIView):
+class MyUserInfoView(generics.GenericAPIView):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
 
