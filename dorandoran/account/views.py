@@ -50,13 +50,6 @@ class UserViewSet(
     # password 변경, 이름 변경 등은 따로 만들자
 
 
-class RegistrationView(generics.CreateAPIView):
-    serializer_class = CreateUserSerializer
-    queryset = User.objects.all()
-    authentication_classes = []
-    permission_classes = [AllowAny]
-
-
 class LoginView(generics.GenericAPIView):
     serializer_class = LoginUserSerializer
     queryset = User.objects.all()
@@ -72,27 +65,6 @@ class LoginView(generics.GenericAPIView):
             {"success": True, "token": token},
             status=status.HTTP_200_OK,
         )
-
-
-class MyUserInfoView(generics.GenericAPIView):
-    serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, *args, **kwargs):
-        current_user = User.objects.get(email=request.user.email)
-        serializer = self.get_serializer(current_user)
-
-        return Response(serializer.data, status=200)
-
-
-class SignOutView(generics.GenericAPIView):
-    serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
-
-    def delete(self, request, *args, **kwargs):
-        current_user = User.objects.get(email=request.user.email)
-        current_user.delete()
-        return Response(status=200)
 
 
 class RefreshJSONWebTokenView(generics.GenericAPIView):
