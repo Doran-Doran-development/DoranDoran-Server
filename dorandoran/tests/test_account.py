@@ -60,12 +60,12 @@ class SignUp(TestCase):
     
     def setUp(self):
         self.base_user_form = { # 기본 유저 폼
-            "username" : "habi",
+            "name" : "habi",
             "email" : "gksqls0128@gmail.com",
             "password" : "0128gksqls"
         }
         self.exist_user = { # 테스트를 위해 DB에 이미 존재할 계정 폼
-            "username" : "hanbin",
+            "name" : "hanbin",
             "email" : "hanbin8269@gmail.com",
             "password" : "0128gksqls",
         }
@@ -85,7 +85,7 @@ class SignUp(TestCase):
     # 성공 - username에 한글 넣었을때
     def test_sign_up_success_with_korean_username(self):
         user = self.base_user_form
-        user['username'] = "정한빈"
+        user['name'] = "정한빈"
 
         response = client.post('/auth/sign-up', user, content_type='application/json')
 
@@ -103,7 +103,7 @@ class SignUp(TestCase):
     # 실패 - 잘못된 폼
     def test_sign_up_falied_with_incorrect_form(self):
         user = self.base_user_form
-        del user['username']
+        del user['name']
 
         response = client.post('/auth/sign-up', user, content_type='application/json')
 
