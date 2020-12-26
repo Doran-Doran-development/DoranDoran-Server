@@ -54,6 +54,8 @@ REST_FRAMEWORK = {
 AUTH_USER_MODEL = "account.User"
 
 ROLE_CHOICES = ((1, "admin"), (2, "teacher"), (3, "student"))
+
+
 # Application definition
 
 INSTALLED_APPS = [
