@@ -26,28 +26,28 @@ class UserViewSet(
     def get_permissions(self):
         if self.action in ("create", "list", "retrieve"):
             permission_classes = [AllowAny]
-        elif self.action in ("destroy", "change_name"):
+        elif self.action in ("destroy", "change_name", "change_password"):
             permission_classes = [IsOwnerOrAdmin]
         return [permission() for permission in permission_classes]
 
     @action(detail=True, methods=["patch"])
     def change_name(self, request, pk):
         current_user = self.get_object()
-        current_user.name = request.data["name"]
+        current_user.name = request.data["new_name"]
         current_user.save()
         return Response("change_name")
+
+    @action(detail=True, methods=["patch"])
+    def change_password(self, request, pk):
+        current_user = self.get_object()
+        current_user.set_password(request.data["new_password"])
+        current_user.save()
+        return Response("change password")
 
     # POST - create user
     # GET - user get, list
     # DELETE - user delete
     # password 변경, 이름 변경 등은 따로 만들자
-
-
-class RegistrationView(generics.CreateAPIView):
-    serializer_class = CreateUserSerializer
-    queryset = User.objects.all()
-    authentication_classes = []
-    permission_classes = [AllowAny]
 
 
 class LoginView(generics.GenericAPIView):
@@ -65,27 +65,6 @@ class LoginView(generics.GenericAPIView):
             {"success": True, "token": token},
             status=status.HTTP_200_OK,
         )
-
-
-class MyUserInfoView(generics.GenericAPIView):
-    serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, *args, **kwargs):
-        current_user = User.objects.get(email=request.user.email)
-        serializer = self.get_serializer(current_user)
-
-        return Response(serializer.data, status=200)
-
-
-class SignOutView(generics.GenericAPIView):
-    serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
-
-    def delete(self, request, *args, **kwargs):
-        current_user = User.objects.get(email=request.user.email)
-        current_user.delete()
-        return Response(status=200)
 
 
 class RefreshJSONWebTokenView(generics.GenericAPIView):
