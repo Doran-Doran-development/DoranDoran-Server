@@ -40,7 +40,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-AUTHENTICATION_BACKENDS = ["account.backends.UserBackend"]
+# AUTHENTICATION_BACKENDS = ["account.backends.UserBackend"]
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
