@@ -1,16 +1,17 @@
-from django.urls import path
+from django.urls import path, include
 from .views import (
-    RegistrationView,
     LoginView,
-    SignOutView,
     RefreshJSONWebTokenView,
-    UserInfoView,
+    UserViewSet,
 )
 
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+router.register(r"users", UserViewSet)
+
 urlpatterns = [
-    path("sign-up", RegistrationView.as_view()),
+    path("", include(router.urls)),
     path("login", LoginView.as_view()),
-    path("sign-out", SignOutView.as_view()),
     path("refresh", RefreshJSONWebTokenView.as_view()),
-    path("my-info", UserInfoView.as_view()),
 ]

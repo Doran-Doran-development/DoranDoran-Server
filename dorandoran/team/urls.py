@@ -10,5 +10,5 @@ router.register(r"member", MemberViewSet, basename="member")
 urlpatterns = [
     url(r"^", include(router.urls)),
     path(r"show/", TeamListAPI.as_view()),
-    path(r"show/<pk>", TeamDetailAPI.as_view())
+    path(r"show/<pk>", TeamDetailAPI.as_view()),
 ]
