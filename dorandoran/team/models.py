@@ -1,5 +1,4 @@
 from django.db import models
-from account.models import User
 
 # Create your models here.
 
@@ -23,12 +22,12 @@ class Team(models.Model):
 class LinkedTeamUser(models.Model):
 
     team_id = models.ForeignKey("team.Team", on_delete=models.CASCADE)
-    email = models.ForeignKey("account.User", on_delete=models.CASCADE)
+    uid = models.ForeignKey("account.User", on_delete=models.CASCADE)
 
     class Meta:
         db_table = u"LinkedTeamUser"
-        unique_together = ("team_id", "email")
-        ordering = ["team_id", "email"]
+        unique_together = ("team_id", "uid")
+        ordering = ["team_id", "uid"]
 
     def __str__(self):
         return self.team_id, self.email
