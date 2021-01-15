@@ -23,7 +23,7 @@ ROOT_DIR = os.path.dirname(BASE_DIR)
 
 # ======== SECRET FILE 경로 설정 ========
 CONFIG_SECRET_DIR = os.path.join(ROOT_DIR, ".config_secret")
-CONFIG_SECRET_FILE = os.path.join(CONFIG_SECRET_DIR, "settings_common.json")
+CONFIG_SECRET_FILE = os.path.join(CONFIG_SECRET_DIR, "settings_develop.json")
 # ======================================
 
 # ======= SECRET FILE json으로 가져오기 ========
@@ -53,7 +53,16 @@ REST_FRAMEWORK = {
 
 AUTH_USER_MODEL = "account.User"
 
+
+REST_FRAMEWORK = {
+   'DEFAULT_AUTHENTICATION_CLASSES': (
+   ),
+   'DEFAULT_PERMISSION_CLASSES': (
+   ),
+}
+
 ROLE_CHOICES = ((1, "admin"), (2, "teacher"), (3, "student"))
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -63,12 +72,12 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "team",
     "drf_yasg",
     "rest_framework",
     "room",
     "account",
     "reserve",
+    "team",
     "corsheaders",
 ]
 
