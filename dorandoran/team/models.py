@@ -30,4 +30,4 @@ class LinkedTeamUser(models.Model):
         ordering = ["team_id", "uid"]
 
     def __str__(self):
-        return self.team_id, self.email
+        return self.team_id, self.uid
