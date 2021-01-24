@@ -10,6 +10,11 @@ class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
         fields = "__all__"
+        # extra_kwargs = {
+        #     "team_id": {"read_only": False},
+        #     "project": {"validators": []},
+        #     "teacher": {"required": False},
+        # }
 
     def validate_post_format(self, obj):
         teacher = obj["teacher"]
@@ -44,14 +49,12 @@ class TeamSerializer(serializers.ModelSerializer):
 
     def is_empty_team(self):
         instance = self.initial_data
-        print(instance)
         if not instance:
-            msg = _("There's no team")
-            raise ValidationError(msg, code=204)
+            return True
         return False
 
 
 class LinkedTeamUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = LinkedTeamUser
-        fields = "__all__"
+        fields = ("team_id", "uid")
