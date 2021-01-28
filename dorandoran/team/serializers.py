@@ -10,11 +10,6 @@ class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
         fields = "__all__"
-        # extra_kwargs = {
-        #     "team_id": {"read_only": False},
-        #     "project": {"validators": []},
-        #     "teacher": {"required": False},
-        # }
 
     def validate_post_format(self, obj):
         teacher = obj["teacher"]
@@ -36,7 +31,6 @@ class TeamSerializer(serializers.ModelSerializer):
 
     def is_teacher(self, uid):
         queryset = User.objects.filter(uid=uid).filter(role=2)
-        print(queryset)
         if not queryset.exists():
             return False
         return True
