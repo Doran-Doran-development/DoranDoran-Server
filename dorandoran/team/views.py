@@ -4,9 +4,14 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ValidationError
 from rest_framework.decorators import action
 from django.http import Http404, HttpResponseBadRequest
+from django.forms.models import model_to_dict
+import json
+import jwt
+from django.http import JsonResponse
 
-from account.authentication import CustomJSONWebTokenAuthentication
+from account.authentication import CustomJSONWebTokenAuthentication, jwt_get_uid_from_payload_handler
 from account.models import User
+from django.conf import settings
 from .models import Team, LinkedTeamUser
 from .serializers import TeamSerializer, LinkedTeamUserSerializer
 from .permissions import isTeacherOrNotDelete
@@ -38,11 +43,13 @@ class MemberViewSet(
     @action(detail=True, methods=["get"])
     def detailed(self, request, pk=None):
         queryset = LinkedTeamUser.objects.filter(team_id=pk)
-        
+
         if len(queryset) == 1:
-            members_serializer = LinkedTeamUserSerializer(data=queryset)
+            member_obj = model_to_dict(queryset.first())
+
+            return JsonResponse(member_obj) 
         else:
-            members_serializer = LinkedTeamUserSerializer(data=[queryset], many=True)
-        if not members_serializer.is_valid():
-            raise ValidationError(members_serializer.errors, code=400)
+            members_serializer = LinkedTeamUserSerializer(queryset, many=True)
+
         return Response(members_serializer.data, status=200)
+
