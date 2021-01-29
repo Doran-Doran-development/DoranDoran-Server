@@ -1,5 +1,5 @@
 from rest_framework.response import Response
-from rest_framework import viewsets, generics, mixins
+from rest_framework import viewsets, generics, mixins, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ValidationError
 from rest_framework.decorators import action
@@ -11,7 +11,7 @@ from django.http import JsonResponse
 
 from account.authentication import CustomJSONWebTokenAuthentication, jwt_get_uid_from_payload_handler
 from account.models import User
-from django.conf import settings
+from config.settings.dev import JWT_AUTH
 from .models import Team, LinkedTeamUser
 from .serializers import TeamSerializer, LinkedTeamUserSerializer
 from .permissions import isTeacherOrNotDelete
@@ -53,3 +53,14 @@ class MemberViewSet(
 
         return Response(members_serializer.data, status=200)
 
+    def destroy(self, request, *args, **kwargs):
+        token = request.headers.get('Authorization', None).split()[1]
+        payload = jwt.decode(token, JWT_AUTH["JWT_SECRET_KEY"], JWT_AUTH["JWT_ALGORITHM"])
+        token_uid = jwt_get_uid_from_payload_handler(payload)
+        try:
+            instance = LinkedTeamUser.objects.get(team_id=self.kwargs["pk"], uid=token_uid)
+        except Exception as e:
+            print(e)
+            raise Http404("user not found")
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
