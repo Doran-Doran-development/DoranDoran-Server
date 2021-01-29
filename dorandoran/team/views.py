@@ -59,7 +59,6 @@ class MemberViewSet(
         token = request.headers.get('Authorization', None).split()[1]
         payload = jwt.decode(token, JWT_AUTH["JWT_SECRET_KEY"], JWT_AUTH["JWT_ALGORITHM"])
         token_uid = jwt_get_uid_from_payload_handler(payload)
-        print(token_uid )
         try:
             instance = LinkedTeamUser.objects.get(team_id=self.kwargs["pk"], uid=token_uid)
         except Exception as e:
