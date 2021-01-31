@@ -29,7 +29,7 @@ class TeamViewSet(
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
     authentication_classes = [CustomJSONWebTokenAuthentication]
-    permission_classes = [IsAuthenticated & isTeacherOrNotDelete]
+    permission_classes = [IsAuthenticated & IsTeacherOrNotDelete]
 
 
 class MemberViewSet(
