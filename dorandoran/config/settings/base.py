@@ -54,6 +54,8 @@ REST_FRAMEWORK = {
 AUTH_USER_MODEL = "account.User"
 
 ROLE_CHOICES = ((1, "admin"), (2, "teacher"), (3, "student"))
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -70,10 +72,10 @@ INSTALLED_APPS = [
     "account",
     "reserve",
     "corsheaders",
+    "debug_toolbar",
 ]
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -81,6 +83,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -103,7 +106,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-CORS_ORIGIN_ALLOW_ALL = True
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -142,3 +144,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = "/static/"
+
+INTERNAL_IPS = "127.0.0.1"

@@ -38,3 +38,12 @@ urlpatterns = [
     ),
     path("docs/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
 ]
+
+from django.conf import settings
+
+if settings.DEBUG:
+    import debug_toolbar
+
+    urlpatterns += [
+        url(r"^__debug__/", include(debug_toolbar.urls)),
+    ]

@@ -1,56 +1,68 @@
 from rest_framework.response import Response
-from django.http import Http404
-from django.shortcuts import render, get_object_or_404
-from rest_framework import generics, viewsets, mixins
+from rest_framework import viewsets, generics, mixins, status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import ValidationError
 from rest_framework.decorators import action
-from .models import Team, LinkedTeamUser
+from django.http import Http404, HttpResponseBadRequest
+from django.forms.models import model_to_dict
+import json
+import jwt
+from django.http import JsonResponse
+
+from account.authentication import CustomJSONWebTokenAuthentication, jwt_get_uid_from_payload_handler
 from account.models import User
+from config.settings.dev import JWT_AUTH
+from .models import Team, LinkedTeamUser
 from .serializers import TeamSerializer, LinkedTeamUserSerializer
-from account.authentication import CustomJSONWebTokenAuthentication
-from rest_framework_jwt.authentication import JSONWebTokenAuthentication
-from rest_framework import permissions
+from .permissions import IsTeacherOrNotDelete
+
 
 # Create your views here.
 
 
-class TeamListCreateView(generics.ListCreateAPIView):
+class TeamViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
     authentication_classes = [CustomJSONWebTokenAuthentication]
-    permission_classes = [permissions.IsAuthenticated]
-
-    # 팀 생성
-    def create(self, request):
-        serializer = TeamSerializer(data=request.data)
-        if serializer.validate(request.data) and serializer.is_valid(request.data):
-            serializer.save()
-            return Response(serializer.data, status=200)
+    permission_classes = [IsAuthenticated & IsTeacherOrNotDelete]
 
 
-class TeamRetrieveDestroyView(generics.RetrieveDestroyAPIView):
-    queryset = Team.objects.all()
-    serializer_class = TeamSerializer
-
-
-class TeamJoinView(generics.CreateAPIView):
+class MemberViewSet(
+    mixins.CreateModelMixin, mixins.DestroyModelMixin, viewsets.GenericViewSet
+):
     queryset = LinkedTeamUser.objects.all()
     serializer_class = LinkedTeamUserSerializer
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [CustomJSONWebTokenAuthentication]
 
+    @action(detail=True, methods=["get"])
+    def detailed(self, request, pk=None):
+        queryset = LinkedTeamUser.objects.filter(team_id=pk)
 
-class TeamOutView(generics.DestroyAPIView):
-    queryset = LinkedTeamUser.objects.all()
-    serializer_class = LinkedTeamUserSerializer
+        if len(queryset) == 0:
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        if len(queryset) == 1:
+            member_obj = model_to_dict(queryset.first())
 
-    def destroy(self, request, email=None, team_id=None):
-        serializer = LinkedTeamUserSerializer(data={"email": email, "team_id": team_id})
-        if not serializer.is_valid():
-            return Response({"msg": "invalid email, "}, status=400)
+            return JsonResponse(member_obj) 
+        else:
+            members_serializer = LinkedTeamUserSerializer(queryset, many=True)
 
+        return Response(members_serializer.data, status=200)
 
-class TeamView(generics.ListAPIView):
-    def list(self, request, email=None):
-        queryset = LinkedTeamUser.objects.filter(email=email)
-        if not queryset:
-            return Response({"msg": "{} never joined any team".format(email)}, status=404)
-        serializer = LinkedTeamUserSerializer(data=queryset)
-        return Response(serializer.data, status=200)
+    def destroy(self, request, *args, **kwargs):
+        token = request.headers.get('Authorization', None).split()[1]
+        payload = jwt.decode(token, JWT_AUTH["JWT_SECRET_KEY"], JWT_AUTH["JWT_ALGORITHM"])
+        token_uid = jwt_get_uid_from_payload_handler(payload)
+        try:
+            instance = LinkedTeamUser.objects.get(team_id=self.kwargs["pk"], uid=token_uid)
+        except Exception as e:
+            print(e)
+            raise Http404("user not found")
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
