@@ -14,7 +14,7 @@ from account.models import User
 from config.settings.dev import JWT_AUTH
 from .models import Team, LinkedTeamUser
 from .serializers import TeamSerializer, LinkedTeamUserSerializer
-from .permissions import isTeacherOrNotDelete
+from .permissions import IsTeacherOrNotDelete
 
 
 # Create your views here.
