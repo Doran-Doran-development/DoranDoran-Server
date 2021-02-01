@@ -45,7 +45,8 @@ class MemberViewSet(
 
     def create(self, request, *args, **kwargs):
         team_num = self.get_queryset().filter(team_id=request.data["team_id"])
-        if len(team_num) > 12:
+
+        if len(team_num) > 11:  # 팀원수 12명 제한
             return Response(
                 "This team is already full.", status=status.HTTP_406_NOT_ACCEPTABLE
             )
@@ -53,9 +54,7 @@ class MemberViewSet(
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
-        return Response(
-            serializer.data, status=status.HTTP_201_CREATED, headers=headers
-        )
+        return Response(status=status.HTTP_201_CREATED, headers=headers)
 
     @action(detail=True, methods=["get"])
     def detailed(self, request, pk=None):
