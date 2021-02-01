@@ -40,6 +40,16 @@ class MemberViewSet(
     permission_classes = [IsAuthenticated]
     authentication_classes = [CustomJSONWebTokenAuthentication]
 
+    def create(self, request, *args, **kwargs):
+        team_num = self.get_queryset().filter(team_id=request.data["team_id"])
+        if len(team_num) > 12:
+            return Response("This team is already full.",status=status.HTTP_406_NOT_ACCEPTABLE)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
     @action(detail=True, methods=["get"])
     def detailed(self, request, pk=None):
         queryset = LinkedTeamUser.objects.filter(team_id=pk)
@@ -62,7 +72,6 @@ class MemberViewSet(
         try:
             instance = LinkedTeamUser.objects.get(team_id=self.kwargs["pk"], uid=token_uid)
         except Exception as e:
-            print(e)
             raise Http404("user not found")
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
