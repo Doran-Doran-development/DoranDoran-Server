@@ -35,7 +35,6 @@ class LoginUserSerializer(serializers.Serializer):
             "username": attrs.get(User.USERNAME_FIELD),
             "password": attrs.get("password"),
         }
-        print(credentials)
         user = authenticate(**credentials)  # backend.authenticate 쓰고
 
         ## 여기부터 다시 하면 된다.

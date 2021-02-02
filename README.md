@@ -52,14 +52,11 @@
 - `AUTH` GET /reserve/{reserve_id} (예약 세부 정보)
 - `AUTH` PATCH /reserve/{reserve_id} (예약 응답)
 
-## Team
+# Team
 
----
-
-- `AUTH` GET /team/show (모든 팀 기본정보 확인)
-- `AUTH` GET /team/show/{team_id} (팀 상세정보 확인)
-- `AUTH` POST /team (팀 생성) 
+- `AUTH` GET /team/ (모든 팀 기본정보 확인)
+- `AUTH` POST /team (팀 생성)
 - `AUTH` DELETE /team/{team_id} (팀 삭제)
 - `AUTH` POST /team/member(팀원 추가)
-- `AUTH` DELETE /team/member/{link_id} (팀원 삭제) 
-- `AUTH` GET /team/member (특정 유저의 가입된 팀 내역 확인)
+- `AUTH` DELETE /team/member/{team_id} (팀원 삭제)
+- `AUTH` GET /team/member/{team_id}/detailed/ (전체 팀원)
