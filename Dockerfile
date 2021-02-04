@@ -4,5 +4,5 @@ COPY . .
 RUN pip install -r requirements.txt
 
 EXPOSE 8000
-ENV DJANGO_SETTINGS_MODULE config.settings.dev
+ENV DJANGO_SETTINGS_MODULE config.settings.deploy
 CMD ["python", "dorandoran/manage.py", "runserver", "0.0.0.0:8000"]
