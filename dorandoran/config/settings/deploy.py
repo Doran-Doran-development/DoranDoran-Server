@@ -4,7 +4,7 @@ import datetime
 
 # 배포환경의 추가 설정을 넣어주자
 
-CONFIG_SECRET_FILE = os.path.join(CONFIG_SECRET_DIR, "settings_develop.json")
+CONFIG_SECRET_FILE = os.path.join(CONFIG_SECRET_DIR, "settings_deploy.json")
 
 if os.path.isfile(CONFIG_SECRET_FILE):
     # 로컬 환경 또는 배포 환경
@@ -24,5 +24,7 @@ JWT_AUTH = {
     "JWT_REFRESH_EXPIRATION_DELTA": datetime.timedelta(weeks=2),
 }
 # ========================
+
+ALLOWED_HOSTS  = ['*']
 
 DATABASES = config_secret_file["django"]["database"]  # DB 설정
