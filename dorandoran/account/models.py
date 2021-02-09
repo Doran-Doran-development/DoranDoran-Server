@@ -82,10 +82,6 @@ class User(AbstractUser):
 
     uid = models.CharField(_("user id"), max_length=150, unique=True, blank=True)
 
-    def save(self, *args, **kwargs):
-        uid_save(self)  # call slug_save, listed below
-        super(User, self).save(*args, **kwargs)
-
     name = models.CharField(
         _("username"),
         max_length=150,
@@ -98,7 +94,11 @@ class User(AbstractUser):
 
     USERNAME_FIELD = "uid"
 
+    REQUIRED_FIELDS = []
+
+    def save(self, *args, **kwargs):
+        uid_save(self)
+        super(User, self).save(*args, **kwargs)
+
     class Meta:
         db_table = u"User"
-
-    REQUIRED_FIELDS = []
