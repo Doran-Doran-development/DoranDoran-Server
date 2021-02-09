@@ -14,7 +14,7 @@ class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ("uid", "email", "password", "name", "role")
-        extra_kwargs = {"role": {"required": False}}
+        extra_kwargs = {"uid": {"required": False}, "role": {"required": False}}
 
     def create(self, validated_data):
         validated_data["password"] = make_password(validated_data["password"])
