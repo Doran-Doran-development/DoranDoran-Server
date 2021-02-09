@@ -25,7 +25,7 @@ class RoomViewSet(viewsets.ViewSet):
         obj = {
             "name": request.data["name"],
             "max_team": request.data["max_team"],
-            "owner": request.user.email,
+            "owner": request.user.uuid,
         }
 
         serializer = RoomSerializer(data=obj)
