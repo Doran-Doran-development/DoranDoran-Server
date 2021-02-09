@@ -7,18 +7,6 @@ from django.conf import settings
 from django.utils.crypto import get_random_string
 
 
-def uid_save(obj):
-
-    while True:
-        obj.uid = get_random_string(length=8)
-        exist_uid = type(obj).objects.filter(uid=obj.uid)
-        if len(exist_uid) > 0:
-            continue
-        break
-
-    return obj
-
-
 class UserManager(BaseUserManager):
 
     use_in_migrations = True
@@ -80,8 +68,6 @@ class User(AbstractUser):
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
-    uid = models.CharField(_("user id"), max_length=150, unique=True, blank=True)
-
     name = models.CharField(
         _("username"),
         max_length=150,
@@ -92,13 +78,10 @@ class User(AbstractUser):
     )
     email = models.EmailField(_("email address"), unique=True, max_length=128)
 
-    USERNAME_FIELD = "uid"
+    USERNAME_FIELD = "uuid"
+    EMAIL_FIELD = "email"
 
     REQUIRED_FIELDS = []
-
-    def save(self, *args, **kwargs):
-        uid_save(self)
-        super(User, self).save(*args, **kwargs)
 
     class Meta:
         db_table = u"User"

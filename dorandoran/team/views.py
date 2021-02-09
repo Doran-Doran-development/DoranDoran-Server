@@ -11,7 +11,7 @@ from django.http import JsonResponse
 
 from account.authentication import (
     CustomJSONWebTokenAuthentication,
-    jwt_get_uid_from_payload_handler,
+    jwt_get_uuid_from_payload_handler,
 )
 from account.models import User
 from config.settings.dev import JWT_AUTH
