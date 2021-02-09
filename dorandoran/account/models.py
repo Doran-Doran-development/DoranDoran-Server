@@ -1,7 +1,22 @@
+import uuid
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from django.conf import settings
+from django.utils.crypto import get_random_string
+
+
+def uid_save(obj):
+
+    while True:
+        obj.uid = get_random_string(length=8)
+        exist_uid = type(obj).objects.filter(uid=obj.uid)
+        if len(exist_uid) > 0:
+            continue
+        break
+
+    return obj
 
 
 class UserManager(BaseUserManager):
@@ -13,7 +28,9 @@ class UserManager(BaseUserManager):
             raise ValueError("must have user email")
         if not password:
             raise ValueError("must have user password")
-        user = self.model(email=self.normalize_email(email), **extra_fields)  # name, role 정보
+        user = self.model(
+            email=self.normalize_email(email), **extra_fields
+        )  # name, role 정보
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -61,12 +78,20 @@ class User(AbstractUser):
 
     objects = UserManager()
 
-    uid = models.CharField(_("user id"), max_length=150, unique=True, primary_key=True)
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+    uid = models.CharField(_("user id"), max_length=150, unique=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        uid_save(self)  # call slug_save, listed below
+        super(User, self).save(*args, **kwargs)
 
     name = models.CharField(
         _("username"),
         max_length=150,
-        help_text=_("Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."),
+        help_text=_(
+            "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
+        ),
         default="unknown",
     )
     email = models.EmailField(_("email address"), unique=True, max_length=128)
