@@ -22,6 +22,7 @@ class UserViewSet(
 ):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    lookup_field = "uuid"
 
     def get_permissions(self):
         if self.action in ("create", "list", "retrieve"):
@@ -31,14 +32,14 @@ class UserViewSet(
         return [permission() for permission in permission_classes]
 
     @action(detail=True, methods=["patch"])
-    def change_name(self, request, pk):
+    def change_name(self, request, uuid):
         current_user = self.get_object()
         current_user.name = request.data["new_name"]
         current_user.save()
         return Response("change_name")
 
     @action(detail=True, methods=["patch"])
-    def change_password(self, request, pk):
+    def change_password(self, request, uuid):
         current_user = self.get_object()
         current_user.set_password(request.data["new_password"])
         current_user.save()
