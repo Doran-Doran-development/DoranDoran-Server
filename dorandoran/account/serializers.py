@@ -13,8 +13,8 @@ from .utils import *
 class CreateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("uid", "email", "password", "name", "role")
-        extra_kwargs = {"uid": {"required": False}, "role": {"required": False}}
+        fields = ("uuid", "email", "password", "name", "role")
+        extra_kwargs = {"uuid": {"required": False}, "role": {"required": False}}
 
     def create(self, validated_data):
         validated_data["password"] = make_password(validated_data["password"])
@@ -22,21 +22,21 @@ class CreateUserSerializer(serializers.ModelSerializer):
 
 
 class LoginUserSerializer(serializers.Serializer):
+
+    uid = serializers.CharField(required=False)
+
     def __init__(self, *args, **kwargs):
         super(LoginUserSerializer, self).__init__(*args, **kwargs)
 
-        username_field = get_username_field()
-
-        self.fields[username_field] = serializers.CharField()
+        self.fields["email"] = serializers.CharField(required=True)
         self.fields["password"] = serializers.CharField(write_only=True)
 
     def validate(self, attrs):
         credentials = {
-            "username": attrs.get(User.USERNAME_FIELD),
+            "username": attrs.get("email"),
             "password": attrs.get("password"),
         }
         user = authenticate(**credentials)  # backend.authenticate 쓰고
-
         ## 여기부터 다시 하면 된다.
         if user is None:
             msg = _("User instance not exists")
@@ -55,7 +55,7 @@ class RefreshJSONWebTokenSerializer(serializers.Serializer):
     def validate(self, attrs):
         token = attrs["Authorization"].split()[1]
         payload = jwt_decode_handler(token)  # check_payload 만들어서 expired 예외처리 해줘야됨
-        user = User.objects.get_by_natural_key(payload["uid"])
+        user = User.objects.get_by_natural_key(payload["uuid"])
 
         orig_iat = payload["iat"]  # refresh 요청 당시 시간
 
