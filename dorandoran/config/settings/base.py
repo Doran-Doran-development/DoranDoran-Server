@@ -75,6 +75,10 @@ INSTALLED_APPS = [
     "debug_toolbar",
 ]
 
+AUTHENTICATION_BACKENDS = [
+    "account.backends.CustomModelBackend",  # 내가 만든 AUTH를 먼저 검사
+]
+
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
@@ -126,8 +130,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-CORS_ORIGIN_WHITELIST = ["*"]
-CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
