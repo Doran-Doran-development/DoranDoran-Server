@@ -23,7 +23,7 @@ def jwt_payload_handler(user):
     expriation_time = datetime.utcnow() + settings.JWT_AUTH["JWT_EXPIRATION_DELTA"]
     payload = {
         "exp": timegm(expriation_time.utctimetuple()),
-        "uid": user.uid,
+        "uuid": str(user.uuid),
         "email": user.email,
         "is_active": user.is_active,
         "name": user.name,
@@ -39,5 +39,5 @@ def get_username_field():
     try:
         username_field = User.USERNAME_FIELD
     except:
-        username_field = "uid"
+        username_field = "uuid"
     return username_field
