@@ -8,21 +8,21 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('team', '0002_auto_20210115_1828'),
+        ("team", "0002_auto_20210115_1828"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='linkedteamuser',
-            options={'ordering': ['team_id', 'uid']},
+            name="linkedteamuser",
+            options={"ordering": ["team_id", "uid"]},
         ),
         migrations.RenameField(
-            model_name='linkedteamuser',
-            old_name='email',
-            new_name='uid',
+            model_name="linkedteamuser",
+            old_name="email",
+            new_name="uid",
         ),
         migrations.AlterUniqueTogether(
-            name='linkedteamuser',
-            unique_together={('team_id', 'uid')},
+            name="linkedteamuser",
+            unique_together={("team_id", "uid")},
         ),
     ]

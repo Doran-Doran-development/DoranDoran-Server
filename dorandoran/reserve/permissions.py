@@ -17,5 +17,7 @@ class ReservePermission(BasePermission):
         elif view.action == "partial_update":  # 선생님 일때 가능
             return request.user.role == 2
         elif view.action == "destroy":  # 예약 주인 일때 가능
-            selected_queue = ReservationQueue.objects.get(id=request.parser_context["kwargs"]["pk"])
+            selected_queue = ReservationQueue.objects.get(
+                id=request.parser_context["kwargs"]["pk"]
+            )
             return request.user.email == str(selected_queue.reserver_id)

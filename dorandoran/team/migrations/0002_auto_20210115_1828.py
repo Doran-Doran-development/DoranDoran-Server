@@ -6,21 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('team', '0001_initial'),
+        ("team", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='team',
-            name='project',
+            model_name="team",
+            name="project",
             field=models.CharField(max_length=50, unique=True),
         ),
         migrations.AlterModelTable(
-            name='linkedteamuser',
-            table='LinkedTeamUser',
+            name="linkedteamuser",
+            table="LinkedTeamUser",
         ),
         migrations.AlterModelTable(
-            name='team',
-            table='Team',
+            name="team",
+            table="Team",
         ),
     ]

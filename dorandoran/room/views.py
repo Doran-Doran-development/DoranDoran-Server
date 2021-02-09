@@ -9,7 +9,6 @@ from .serializers import RoomSerializer
 from .models import Room
 
 
-
 class RoomViewSet(viewsets.ViewSet):
 
     authentication_classes = [CustomJSONWebTokenAuthentication]
@@ -42,12 +41,12 @@ class RoomViewSet(viewsets.ViewSet):
         serializer = RoomSerializer(queryset)
         return Response(serializer.data)
 
-    def destroy(self, request,pk=None):
+    def destroy(self, request, pk=None):
         instance = Room.objects.get(pk=pk)
         instance.delete()
-        return Response({"message":"Success"},status=status.HTTP_204_NO_CONTENT)
+        return Response({"message": "Success"}, status=status.HTTP_204_NO_CONTENT)
 
-    def update(self, request,pk=None):
+    def update(self, request, pk=None):
         instance = Room.objects.get(pk=pk)
         instance.name = request.data["name"]
         instance.max_team = request.data["max_team"]
