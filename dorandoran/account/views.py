@@ -69,7 +69,7 @@ class LoginView(generics.GenericAPIView):
 
 
 class CurrentUserView(generics.GenericAPIView):
-    serializer_class = LoginUserSerializer
+    serializer_class = UserSerializer
     queryset = User.objects.all()
     permission_classes = [IsAuthenticated]
 
