@@ -83,8 +83,4 @@ class RefreshJSONWebTokenSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = "__all__"
-
-    def create(self, validated_data):
-        validated_data["password"] = make_password(validated_data["password"])
-        return User.objects.create(**validated_data)
+        fields = ("uuid", "email", "password", "name", "role")

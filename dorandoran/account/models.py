@@ -66,7 +66,7 @@ class User(AbstractUser):
 
     objects = UserManager()
 
-    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4)
 
     name = models.CharField(
         _("username"),
