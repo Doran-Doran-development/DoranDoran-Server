@@ -68,6 +68,20 @@ class LoginView(generics.GenericAPIView):
         )
 
 
+class CurrentUserView(generics.GenericAPIView):
+    serializer_class = LoginUserSerializer
+    queryset = User.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        serializer = UserSerializer(data=request.user.__dict__)
+        serializer.is_valid()
+        return Response(
+            {"info": serializer.data},
+            status=status.HTTP_200_OK,
+        )
+
+
 class RefreshJSONWebTokenView(generics.GenericAPIView):
     serializer_class = RefreshJSONWebTokenSerializer
     permission_classes = [IsAuthenticated]

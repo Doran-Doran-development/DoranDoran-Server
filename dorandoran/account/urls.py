@@ -3,6 +3,7 @@ from .views import (
     LoginView,
     RefreshJSONWebTokenView,
     UserViewSet,
+    CurrentUserView
 )
 
 from rest_framework.routers import DefaultRouter
@@ -14,4 +15,5 @@ urlpatterns = [
     path("", include(router.urls)),
     path("login", LoginView.as_view()),
     path("refresh", RefreshJSONWebTokenView.as_view()),
+    path("check", CurrentUserView.as_view()),
 ]
