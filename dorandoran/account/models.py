@@ -83,5 +83,8 @@ class User(AbstractUser):
 
     REQUIRED_FIELDS = []
 
+    def __str__(self):
+        return str(uuid)
+
     class Meta:
         db_table = u"User"
