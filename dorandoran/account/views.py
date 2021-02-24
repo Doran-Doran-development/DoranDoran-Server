@@ -4,7 +4,6 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.decorators import action
 
 from .serializers import (
-    CreateUserSerializer,
     LoginUserSerializer,
     UserSerializer,
     RefreshJSONWebTokenSerializer,
@@ -61,7 +60,7 @@ class LoginView(generics.GenericAPIView):
         serializer = self.get_serializer(data=request.data)  # serializer화 시키고
         if not serializer.is_valid():  # is_valid로 확인 하고
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        token = serializer.validated_data  # serializer_data 받아서 리턴
+        token = serializer.validated_data["token"]  # serializer_data 받아서 리턴
         return Response(
             {"success": True, "token": token},
             status=status.HTTP_200_OK,
