@@ -32,7 +32,7 @@ class LoginUserSerializer(serializers.Serializer):
     def validate(self, attrs):
         user = authenticate(
             email=attrs.get("email"), password=attrs.get("password")
-        ) # base.py에서 지정해주지 않았기 때문에 ModelBackend의 authenticate를 쓴다.
+        )  # base.py에서 지정해주지 않았기 때문에 ModelBackend의 authenticate를 쓴다.
         if user is None:
             msg = _("User instance not exists")
             raise serializers.ValidationError(msg)
@@ -41,10 +41,7 @@ class LoginUserSerializer(serializers.Serializer):
 
         token = jwt_encode_handler(payload)  # token 생성
 
-        return {
-            "email":user.email,
-            "token" : token
-        }  # token 반환
+        return {"email": user.email, "token": token}  # token 반환
 
 
 class RefreshJSONWebTokenSerializer(serializers.Serializer):
