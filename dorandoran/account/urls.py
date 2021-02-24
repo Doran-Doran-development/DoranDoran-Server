@@ -1,14 +1,9 @@
 from django.urls import path, include
-from .views import (
-    LoginView,
-    RefreshJSONWebTokenView,
-    UserViewSet,
-    CurrentUserView
-)
+from .views import LoginView, RefreshJSONWebTokenView, UserViewSet, CurrentUserView
 
 from rest_framework.routers import DefaultRouter
 
-router = DefaultRouter()
+router = DefaultRouter(trailing_slash=False)
 router.register(r"users", UserViewSet)
 
 urlpatterns = [
