@@ -45,14 +45,15 @@ class LoginUserSerializer(serializers.Serializer):
 
 
 class RefreshJSONWebTokenSerializer(serializers.Serializer):
-    Authorization = serializers.CharField()
+    Authorization = serializers.CharField(write_only=True)
+    token = serializers.CharField(max_length=255, read_only=True)
 
     def validate(self, attrs):
         token = attrs["Authorization"].split()[1]
-        payload = jwt_decode_handler(token)  # check_payload 만들어서 expired 예외처리 해줘야됨
-        user = User.objects.get_by_natural_key(payload["uuid"])
+        payload = jwt_decode_handler(token)  # 입력받은 token으로 payload 획득
+        user = User.objects.get_by_natural_key(User.USERNAME_FIELD)
 
-        orig_iat = payload["iat"]  # refresh 요청 당시 시간
+        orig_iat = payload["iat"]  # 토큰의 발행 시기 (issued at)
 
         if orig_iat:
             refresh_limit = settings.JWT_AUTH["JWT_REFRESH_EXPIRATION_DELTA"]
@@ -64,7 +65,7 @@ class RefreshJSONWebTokenSerializer(serializers.Serializer):
             now_time = timegm(datetime.utcnow().utctimetuple())
 
             if now_time > expiration_time:
-                msg = _("Refrash has expired")
+                msg = _("Refresh has expired")
                 raise serializers.ValidationError(msg)
         else:
             msg = _("iat field is required")
@@ -72,4 +73,4 @@ class RefreshJSONWebTokenSerializer(serializers.Serializer):
 
         new_payload = jwt_payload_handler(user)
         new_payload["iat"] = orig_iat
-        return jwt_encode_handler(new_payload)
+        return {"token": jwt_encode_handler(new_payload)}
