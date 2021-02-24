@@ -10,15 +10,18 @@ from .models import User
 from .utils import *
 
 
-class CreateUserSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("uuid", "email", "password", "name", "role")
-        extra_kwargs = {"uuid": {"required": False}, "role": {"required": False}}
+        fields = "__all__"
+        read_only_fields = ("uuid", "active", "date_joined")
+        extra_kwargs = {
+            "role": {"required": False},
+            "password": {"write_only": True},
+        }
 
     def create(self, validated_data):
-        validated_data["password"] = make_password(validated_data["password"])
-        return User.objects.create(**validated_data)
+        return User.objects.create_user(**validated_data)
 
 
 class LoginUserSerializer(serializers.Serializer):
@@ -29,7 +32,7 @@ class LoginUserSerializer(serializers.Serializer):
     def validate(self, attrs):
         user = authenticate(
             email=attrs.get("email"), password=attrs.get("password")
-        )  # base.py에서 지정해주지 않았기 때문에 ModelBackend의 authenticate를 쓴다.
+        ) # base.py에서 지정해주지 않았기 때문에 ModelBackend의 authenticate를 쓴다.
         if user is None:
             msg = _("User instance not exists")
             raise serializers.ValidationError(msg)
@@ -38,7 +41,10 @@ class LoginUserSerializer(serializers.Serializer):
 
         token = jwt_encode_handler(payload)  # token 생성
 
-        return {"email": user.email, "token": token}  # token 반환
+        return {
+            "email":user.email,
+            "token" : token
+        }  # token 반환
 
 
 class RefreshJSONWebTokenSerializer(serializers.Serializer):
@@ -70,9 +76,3 @@ class RefreshJSONWebTokenSerializer(serializers.Serializer):
         new_payload = jwt_payload_handler(user)
         new_payload["iat"] = orig_iat
         return jwt_encode_handler(new_payload)
-
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ("uuid", "email", "password", "name", "role")
