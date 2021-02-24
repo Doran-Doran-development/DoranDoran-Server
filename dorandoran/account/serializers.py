@@ -51,7 +51,7 @@ class RefreshJSONWebTokenSerializer(serializers.Serializer):
     def validate(self, attrs):
         token = attrs["Authorization"].split()[1]
         payload = jwt_decode_handler(token)  # 입력받은 token으로 payload 획득
-        user = User.objects.get_by_natural_key(User.USERNAME_FIELD)
+        user = User.objects.get_by_natural_key(payload[User.USERNAME_FIELD])
 
         orig_iat = payload["iat"]  # 토큰의 발행 시기 (issued at)
 
