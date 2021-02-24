@@ -75,9 +75,6 @@ INSTALLED_APPS = [
     "debug_toolbar",
 ]
 
-AUTHENTICATION_BACKENDS = [
-    "account.backends.CustomModelBackend",  # 내가 만든 AUTH를 먼저 검사
-]
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
