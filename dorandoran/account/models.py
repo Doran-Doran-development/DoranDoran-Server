@@ -78,13 +78,10 @@ class User(AbstractUser):
     )
     email = models.EmailField(_("email address"), unique=True, max_length=128)
 
-    USERNAME_FIELD = "uuid"
+    USERNAME_FIELD = "email"
     EMAIL_FIELD = "email"
 
     REQUIRED_FIELDS = []
-
-    def __str__(self):
-        return str(uuid)
 
     class Meta:
         db_table = u"User"
