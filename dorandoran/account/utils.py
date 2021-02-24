@@ -41,3 +41,7 @@ def get_username_field():
     except:
         username_field = "uuid"
     return username_field
+
+
+def jwt_get_username_from_payload_handler(payload):
+    return payload.get(User.USERNAME_FIELD)
