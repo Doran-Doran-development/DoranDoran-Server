@@ -2,7 +2,6 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
-from account.authentication import CustomJSONWebTokenAuthentication
 from account.serializers import UserSerializer
 from account.models import User
 
@@ -12,7 +11,6 @@ from .permissions import ReservePermission
 
 
 class ReservationViewSet(viewsets.ModelViewSet):
-    authentication_classes = [CustomJSONWebTokenAuthentication]
     serializer_class = ReservationQueueSerializer
     permission_classes = [IsAuthenticated, ReservePermission]
     queryset = ReservationQueue.objects.all()
