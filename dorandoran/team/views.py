@@ -9,9 +9,6 @@ import json
 import jwt
 from django.http import JsonResponse
 
-from account.authentication import (
-    jwt_get_uuid_from_payload_handler,
-)
 from account.models import User
 from config.settings.dev import JWT_AUTH
 from .models import Team, LinkedTeamUser
@@ -73,10 +70,10 @@ class MemberViewSet(
         payload = jwt.decode(
             token, JWT_AUTH["JWT_SECRET_KEY"], JWT_AUTH["JWT_ALGORITHM"]
         )
-        token_uid = jwt_get_uid_from_payload_handler(payload)
+        token_uuid = payload.get("uuid")
         try:
             instance = LinkedTeamUser.objects.get(
-                team_id=self.kwargs["pk"], uid=token_uid
+                team_id=self.kwargs["pk"], user_id=token_uuid
             )
         except Exception as e:
             return Response(
