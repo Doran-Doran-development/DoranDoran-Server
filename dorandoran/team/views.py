@@ -10,7 +10,6 @@ import jwt
 from django.http import JsonResponse
 
 from account.authentication import (
-    CustomJSONWebTokenAuthentication,
     jwt_get_uuid_from_payload_handler,
 )
 from account.models import User
@@ -31,7 +30,6 @@ class TeamViewSet(
 ):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
-    authentication_classes = [CustomJSONWebTokenAuthentication]
     permission_classes = [IsAuthenticated & IsTeacherOrNotDelete]
 
 
@@ -41,7 +39,6 @@ class MemberViewSet(
     queryset = LinkedTeamUser.objects.all()
     serializer_class = LinkedTeamUserSerializer
     permission_classes = [IsAuthenticated]
-    authentication_classes = [CustomJSONWebTokenAuthentication]
 
     def create(self, request, *args, **kwargs):
         team_num = self.get_queryset().filter(team_id=request.data["team_id"])
