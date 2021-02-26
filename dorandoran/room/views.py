@@ -3,7 +3,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, permissions
 
-from account.authentication import CustomJSONWebTokenAuthentication
 from .permissions import IsTeacherOrReadOnly
 from .serializers import RoomSerializer
 from .models import Room
@@ -11,7 +10,6 @@ from .models import Room
 
 class RoomViewSet(viewsets.ViewSet):
 
-    authentication_classes = [CustomJSONWebTokenAuthentication]
     permission_classes = [permissions.IsAuthenticated & IsTeacherOrReadOnly]
 
     def list(self, request):
