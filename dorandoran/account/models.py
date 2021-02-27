@@ -68,14 +68,8 @@ class User(AbstractUser):
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4)
 
-    name = models.CharField(
-        _("username"),
-        max_length=150,
-        help_text=_(
-            "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
-        ),
-        default="unknown",
-    )
+    name = models.CharField(max_length=150, default="unknown")
+    
     email = models.EmailField(_("email address"), unique=True, max_length=128)
 
     USERNAME_FIELD = "email"
