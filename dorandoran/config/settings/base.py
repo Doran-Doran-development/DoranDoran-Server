@@ -2,8 +2,6 @@ import os
 import json
 from datetime import timedelta
 
-DEBUG = True
-
 ALLOWED_HOSTS = ["*"]
 
 
