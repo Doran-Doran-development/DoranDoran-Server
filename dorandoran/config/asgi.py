@@ -8,8 +8,10 @@ https://docs.djangoproject.com/en/3.1/howto/deployment/asgi/
 """
 
 import os
-
+import sys
 from django.core.asgi import get_asgi_application
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)) + '/dorandoran')))
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 
